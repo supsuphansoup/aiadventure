@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EatTrend (맛트렌드) - 실시간 유행 레시피 & 원클릭 재료 장바구니</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts (Pretendard & Inter) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c'
+            },
+            coupang: '#E02020'
+          },
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Pretendard', sans-serif; }
+    /* 커스텀 스크롤바 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col">
+
+  <!-- ================= 1. 반응형 테스트 제어 툴바 (상단 고정) ================= -->
+  <aside aria-label="반응형 프리뷰 모드 제어 바" class="bg-slate-900 text-slate-200 text-xs px-4 py-2 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 sticky top-0 z-50 shadow-md">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span class="font-bold text-white tracking-wide">EatTrend Demo UI v1.0</span>
+      <span class="hidden sm:inline text-slate-400">| 반응형 뷰포트 시뮬레이션:</span>
+    </div>
+    <div class="flex items-center gap-1.5 bg-slate-800 p-1 rounded-lg border border-slate-700">
+      <button onclick="setViewport('mobile')" id="btn-vp-mobile" class="px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        모바일 (390px)
+      </button>
+      <button onclick="setViewport('tablet')" id="btn-vp-tablet" class="px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        태블릿 (768px)
+      </button>
+      <button onclick="setViewport('full')" id="btn-vp-full" class="px-2.5 py-1 rounded bg-brand-500 text-white font-medium transition flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        PC 전체화면 (100%)
+      </button>
+    </div>
+  </aside>
+
+  <!-- 시뮬레이터 래퍼 컨테이너 (반응형 테스트용) -->
+  <div id="viewport-wrapper" class="w-full flex-1 mx-auto transition-all duration-300 flex flex-col">
+
+    <!-- ================= 2. 메인 헤더 ================= -->
+    <header class="bg-white/95 backdrop-blur sticky top-8 z-40 border-b border-slate-200">
+      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        <!-- 로고 -->
+        <a href="#" onclick="showHomeView(); return false;" class="flex items-center gap-2 flex-shrink-0 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition">
+            <span class="text-xl">🍳</span>
+          </div>
+          <div>
+            <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-amber-600 bg-clip-text text-transparent">EatTrend</span>
+            <span class="hidden sm:inline-block ml-1 text-xs font-semibold px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 border border-brand-200">맛트렌드</span>
+          </div>
+        </a>
+
+        <!-- 통합 검색바 (요리명 or 냉장고 재료) -->
+        <div class="flex-1 max-w-md hidden md:block">
+          <div class="relative">
+            <input type="text" id="searchInput" onkeyup="handleSearch(this.value)" placeholder="요리명 또는 냉장고 재료 검색 (예: 대파, 스팸, 덮밥)" 
+                   class="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </div>
+
+        <!-- 우측 액션 & 제휴 안내 -->
+        <div class="flex items-center gap-2">
+          <!-- 모바일 검색 토글 버튼 -->
+          <button onclick="toggleMobileSearch()" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </button>
+          
+          <button onclick="openBookmarkModal()" class="relative p-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition" title="내가 찜한 레시피">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500"></span>
+          </button>
+
+          <div class="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>로켓배송 원클릭 연동</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모바일 검색바 확장 드롭다운 -->
+      <div id="mobileSearchBox" class="hidden md:hidden px-4 pb-3 pt-1 border-t border-slate-100">
+        <input type="text" onkeyup="handleSearch(this.value)" placeholder="요리명 또는 냉장고 재료 검색..." 
+               class="w-full bg-slate-100 border border-slate-200 rounded-full py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+      </div>
+    </header>
+
+    <!-- ================= 3. 메인 콘텐츠 컨테이너 ================= -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+
+      <!-- ================= 3-A. 홈 화면 뷰 (HOME VIEW) ================= -->
+      <section id="home-view" class="space-y-8">
+
+        <!-- 3-A-1. 히어로 배너: 오늘의 실시간 1위 바이럴 레시피 -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-brand-950 text-white p-6 sm:p-8 shadow-xl">
+          <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="space-y-3 max-w-xl">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-brand-500 text-white flex items-center gap-1">
+                  🔥 실시간 1위 급상승
+                </span>
+                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-amber-300">
+                  YouTube Shorts 340만 뷰
+                </span>
+                <span class="text-xs text-slate-300">2026.10 트렌드</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug">
+                전자레인지 3분 30초! <br class="hidden sm:inline">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">대파 대패삼겹살 덮밥</span>
+              </h1>
+              <p class="text-sm text-slate-300 line-clamp-2">
+                프라이팬에 기름 튈 걱정 ZERO! 내열용기에 대파 깔고 삼겹살 올려 전자레인지 돌리면 끝나는 역대급 자취 요리
+              </p>
+              <div class="flex items-center gap-4 text-xs text-slate-300 pt-1">
+                <span>⏱️ 소요시간: <strong>10분</strong></span>
+                <span>⭐ 평점: <strong>4.9 (후기 142개)</strong></span>
+                <span>🛒 필수재료: <strong>3개</strong></span>
+              </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto flex-shrink-0">
+              <button onclick="openRecipeDetail(recipes[0].id)" class="w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-amber-500 text-white font-bold text-sm shadow-lg shadow-brand-500/30 hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2">
+                <span>조리법 & 원클릭 장바구니 보기</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+              <button onclick="quickAddCart(recipes[0])" class="w-full px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition border border-white/10 flex items-center justify-center gap-1.5">
+                <span class="text-coupang font-bold">쿠팡</span>
+                <span>재료 한번에 담기 (17,380원)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-A-2. 랭킹 탭 & 카테고리 필터 -->
+        <div class="space-y-4">
+          <!-- 상위 메인 탭 -->
+          <div class="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto hide-scrollbar">
+            <button onclick="changeTab('trend')" id="tab-trend" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white flex items-center gap-1.5 flex-shrink-0 shadow-sm transition">
+              <span>🔥 실시간 트렌드 TOP 10</span>
+              <span class="text-xs px-1.5 py-0.2 rounded-full bg-brand-500 text-white">LIVE</span>
+            </button>
+            <button onclick="changeTab('likes')" id="tab-likes" class="tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition">
+              <span>❤️ 명예의 전당 (좋아요 순)</span>
+            </button>
+            <button onclick="changeTab('quick')" id="tab-quick" class="tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition">
+              <span>⏱️ 10분컷 초간단</span>
+            </button>
+            <button onclick="changeTab('convenience')" id="tab-convenience" class="tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition">
+              <span>🏪 편의점 꿀조합</span>
+            </button>
+          </div>
+
+          <!-- 태그 칩 필터 -->
+          <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
+            <span class="text-xs font-semibold text-slate-400 flex-shrink-0">추천 태그:</span>
+            <button onclick="filterByTag('ALL')" class="tag-chip active px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-600 border border-brand-200">#전체보기</button>
+            <button onclick="filterByTag('전자레인지')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#전자레인지</button>
+            <button onclick="filterByTag('원팬')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#원팬요리</button>
+            <button onclick="filterByTag('안주')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#야식/술안주</button>
+            <button onclick="filterByTag('자취생')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#자취생필수</button>
+            <button onclick="filterByTag('흑백요리사')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#흑백요리사</button>
+          </div>
+        </div>
+
+        <!-- 3-A-3. 레시피 카드 그리드 (PC 3~4열, 태블릿 2열, 모바일 1열) -->
+        <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- 자바스크립트로 동적 렌더링 -->
+        </div>
+
+      </section>
+
+      <!-- ================= 3-B. 레시피 상세 & 장바구니 뷰 (DETAIL VIEW) ================= -->
+      <section id="detail-view" class="hidden space-y-6">
+        <!-- 상단 뒤로가기 & 브레드크럼 -->
+        <div class="flex items-center justify-between">
+          <button onclick="showHomeView()" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-lg border border-slate-200 shadow-sm transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span>목록으로 돌아가기</span>
+          </button>
+          <div class="flex items-center gap-2">
+            <button id="detail-like-btn" onclick="toggleCurrentRecipeLike()" class="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-rose-500 hover:border-rose-200 transition flex items-center gap-1 text-sm font-medium">
+              <svg class="w-5 h-5 fill-current text-rose-500" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+              <span id="detail-like-count">1,248</span>
+            </button>
+            <button onclick="copyShareUrl()" class="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition" title="레시피 링크 복사">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 레시피 헤더 상세 카드 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="detail-badge-viral" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200">
+              🔥 릴스 290만뷰
+            </span>
+            <span id="detail-category" class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+              초간단 요리
+            </span>
+            <span class="text-xs text-slate-400">원작자: <span id="detail-creator" class="font-semibold text-slate-700">자취요리신</span></span>
+          </div>
+
+          <h2 id="detail-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            레시피 제목
+          </h2>
+          <p id="detail-desc" class="text-sm text-slate-600">
+            레시피 요약 설명이 들어갑니다.
+          </p>
+
+          <!-- 메타 정보 그리드 (시간, 난이도, 칼로리, 인분) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-100">
+            <div class="bg-slate-50 p-3 rounded-xl text-center">
+              <span class="text-xs text-slate-400 block">조리 시간</span>
+              <span id="detail-time" class="font-bold text-slate-800 text-sm">⏱️ 10분</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl text-center">
+              <span class="text-xs text-slate-400 block">난이도</span>
+              <span id="detail-difficulty" class="font-bold text-emerald-600 text-sm">⭐ 초급 (누구나)</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl text-center">
+              <span class="text-xs text-slate-400 block">분량</span>
+              <span id="detail-servings" class="font-bold text-slate-800 text-sm">🍽️ 1인분</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl text-center">
+              <span class="text-xs text-slate-400 block">체감 성공률</span>
+              <span id="detail-success-rate" class="font-bold text-brand-600 text-sm">🎯 96% 성공</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2컬럼 레이아웃: [좌: 재료 선택 & 장바구니 CTA] vs [우: 조리법 & 타이머 & 익명리뷰] -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <!-- 좌측 컬럼 (lg: 5칸): 재료 체크리스트 & 원클릭 장바구니 -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="bg-white rounded-2xl border-2 border-brand-200 p-5 shadow-md sticky top-28">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <h3 class="font-extrabold text-slate-900 flex items-center gap-1.5 text-base">
+                    <span>🛒 필요한 재료 선택</span>
+                    <span class="text-xs font-normal text-slate-500">(집 재료는 체크 해제)</span>
+                  </h3>
+                </div>
+                <div class="flex items-center gap-1 text-xs">
+                  <button onclick="toggleAllIngredients(true)" class="text-brand-600 hover:underline font-semibold">전체선택</button>
+                  <span class="text-slate-300">|</span>
+                  <button onclick="toggleAllIngredients(false)" class="text-slate-500 hover:underline">전체해제</button>
+                </div>
+              </div>
+
+              <!-- 재료 리스트 (체크박스) -->
+              <div id="ingredient-checklist" class="divide-y divide-slate-100 my-2 max-h-[360px] overflow-y-auto pr-1">
+                <!-- 동적 렌더링 -->
+              </div>
+
+              <!-- 금액 합산 요약 -->
+              <div class="bg-brand-50/70 rounded-xl p-3.5 mt-3 space-y-2 border border-brand-100">
+                <div class="flex justify-between items-center text-xs text-slate-600">
+                  <span>선택된 구매 재료</span>
+                  <span id="selected-count-label" class="font-bold text-brand-700">3개 / 4개</span>
+                </div>
+                <div class="flex justify-between items-baseline">
+                  <span class="text-xs font-bold text-slate-700">예상 구매 총액</span>
+                  <div>
+                    <span id="selected-price-total" class="text-lg font-black text-slate-900">17,380</span>
+                    <span class="text-xs font-bold text-slate-700">원</span>
+                  </div>
+                </div>
+                <div class="text-[11px] text-slate-500 flex items-center gap-1 pt-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>로켓프레시/로켓배송 상품으로 내일 아침 도착 가능</span>
+                </div>
+              </div>
+
+              <!-- 장바구니 일괄 담기 CTA 버튼 -->
+              <button onclick="openCoupangBridgeModal()" class="w-full mt-4 py-3.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold text-sm shadow-lg shadow-rose-500/25 hover:brightness-110 active:scale-98 transition flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <span>선택한 재료 쿠팡으로 한번에 담기</span>
+              </button>
+
+              <!-- 공정위 준수 문구 표기 -->
+              <p class="text-[11px] text-slate-400 text-center mt-2 leading-tight">
+                * 이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- 우측 컬럼 (lg: 7칸): 조리법 스텝 + 내장 타이머 + 익명 리뷰 -->
+          <div class="lg:col-span-7 space-y-6">
+
+            <!-- 1. 단계별 조리법 (Step-by-step) -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                  <span>🍳 단계별 조리 순서</span>
+                </h3>
+                <!-- 내장 스톱워치/타이머 위젯 -->
+                <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                  <span class="text-xs font-semibold text-slate-500">⏱️ 조리 타이머:</span>
+                  <span id="timer-display" class="font-mono font-bold text-sm text-slate-800">03:30</span>
+                  <button id="timer-btn" onclick="toggleTimer()" class="text-xs font-bold text-brand-600 hover:text-brand-700 bg-white px-2 py-0.5 rounded shadow-xs">시작</button>
+                </div>
+              </div>
+
+              <!-- 조리 스텝 리스트 -->
+              <div id="recipe-steps-list" class="space-y-4">
+                <!-- 동적 렌더링 -->
+              </div>
+
+              <!-- 꿀팁 콜아웃 -->
+              <div class="bg-amber-50 rounded-xl p-4 border border-amber-200/80 flex items-start gap-3">
+                <span class="text-xl flex-shrink-0">💡</span>
+                <div class="text-xs text-amber-900 space-y-1">
+                  <strong class="font-bold block text-sm">실패 방지 핵심 꿀팁!</strong>
+                  <p id="detail-tip-text">전자레인지 출력(700W / 1000W)에 따라 30초 정도 조절하세요. 랩은 밀봉하지 말고 김이 빠져나갈 틈을 주셔야 고기가 촉촉하게 익습니다.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. 익명 리뷰 & 실전 후기 커뮤니티 -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                    <span>💬 익명 리뷰 & 해먹은 후기</span>
+                    <span id="review-count-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-100 text-brand-700">12개</span>
+                  </h3>
+                  <p class="text-xs text-slate-500 mt-0.5">회원가입 없이 솔직한 성공/실패기와 대체재료 꿀팁을 남겨보세요!</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-2xl font-black text-amber-500">4.8</span>
+                  <span class="text-xs text-slate-400">/ 5.0</span>
+                </div>
+              </div>
+
+              <!-- 익명 리뷰 작성 폼 -->
+              <form id="review-form" onsubmit="submitAnonymousReview(event)" class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <!-- 닉네임 입력 + 랜덤 생성 버튼 -->
+                  <div class="flex gap-1.5">
+                    <input type="text" id="review-nickname" required placeholder="익명 닉네임 (예: 배고픈자취러)" 
+                           class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    <button type="button" onclick="generateRandomNickname()" class="px-2.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold flex items-center gap-1 transition" title="랜덤 닉네임 뽑기">
+                      <span>🎲</span>
+                    </button>
+                  </div>
+                  <!-- 삭제/수정용 4자리 비번 -->
+                  <div>
+                    <input type="password" id="review-password" maxlength="4" required placeholder="비밀번호 4자리 (수정/삭제용)" 
+                           class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                  </div>
+                </div>
+
+                <!-- 체감 평가 뱃지 선택 -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1.5">내가 직접 해본 체감 결과는?</label>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
+                    <label class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50/50 has-[:checked]:text-brand-700 transition">
+                      <input type="radio" name="review-badge" value="인생요리" checked class="text-brand-500">
+                      <span>😍 인생요리</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50/50 has-[:checked]:text-brand-700 transition">
+                      <input type="radio" name="review-badge" value="맛있어요" class="text-brand-500">
+                      <span>😋 맛있음</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50/50 has-[:checked]:text-brand-700 transition">
+                      <input type="radio" name="review-badge" value="쏘쏘해요" class="text-brand-500">
+                      <span>😐 쏘쏘</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50/50 has-[:checked]:text-brand-700 transition">
+                      <input type="radio" name="review-badge" value="망했어요" class="text-brand-500">
+                      <span>💀 망했음(실패)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 별점 선택 -->
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-slate-700">별점:</span>
+                  <div class="flex gap-1" id="star-rating-select">
+                    <button type="button" onclick="setRating(1)" class="star-btn text-amber-400 text-base">★</button>
+                    <button type="button" onclick="setRating(2)" class="star-btn text-amber-400 text-base">★</button>
+                    <button type="button" onclick="setRating(3)" class="star-btn text-amber-400 text-base">★</button>
+                    <button type="button" onclick="setRating(4)" class="star-btn text-amber-400 text-base">★</button>
+                    <button type="button" onclick="setRating(5)" class="star-btn text-amber-400 text-base">★</button>
+                  </div>
+                  <span id="rating-text" class="text-xs text-slate-500 font-semibold">5점 (최고예요)</span>
+                </div>
+
+                <!-- 솔직 후기 내용 -->
+                <textarea id="review-content" required rows="2" placeholder="솔직한 맛 평가를 남겨주세요. (예: 진짜 3분만에 되고 삼겹살 기름에 파가 절여져서 꿀맛입니다)"
+                          class="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+
+                <!-- 나만의 대체재료/조리 팁 (선택) -->
+                <div class="relative">
+                  <input type="text" id="review-tip" placeholder="💡 나만의 실패방지 팁/대체 재료 (선택: 청양고추 반개 썰어넣으면 안 느끼해요)"
+                         class="w-full bg-white border border-amber-300 rounded-lg pl-8 pr-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                  <span class="absolute left-2.5 top-2 text-xs">🍯</span>
+                </div>
+
+                <div class="flex justify-end">
+                  <button type="submit" class="px-5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow transition">
+                    익명 리뷰 등록하기
+                  </button>
+                </div>
+              </form>
+
+              <!-- 리뷰 피드 목록 -->
+              <div id="review-feed" class="space-y-3 divide-y divide-slate-100">
+                <!-- 동적 렌더링 -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ================= 4. 푸터 ================= -->
+    <footer class="bg-white border-t border-slate-200 mt-16 py-8 text-xs text-slate-500">
+      <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div>
+          <p class="font-bold text-slate-700">EatTrend (맛트렌드) - AI 기반 바이럴 레시피 & 제휴 커머스</p>
+          <p class="mt-1 text-[11px] text-slate-400">
+            쿠팡 파트너스 및 주요 이커머스 제휴 API를 통해 필요한 식재료를 최저가/로켓배송으로 자동 매칭합니다.
+          </p>
+        </div>
+        <div class="flex items-center gap-4 text-slate-400">
+          <a href="#" class="hover:underline">이용약관</a>
+          <a href="#" class="hover:underline">개인정보처리방침</a>
+          <a href="#" class="hover:underline">제휴 문의</a>
+        </div>
+      </div>
+    </footer>
+
+  </div> <!-- /#viewport-wrapper -->
+
+  <!-- ================= 5. 쿠팡 파트너스 장바구니 연동 브릿지 모달 ================= -->
+  <div id="coupang-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white font-black text-sm">C</span>
+          <div>
+            <h4 class="font-extrabold text-slate-900 text-sm">쿠팡 장바구니 일괄 담기</h4>
+            <span class="text-[11px] text-slate-400">로켓프레시/로켓배송 최저가 매칭</span>
+          </div>
+        </div>
+        <button onclick="closeCoupangBridgeModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 담길 상품 확인 목록 -->
+      <div class="space-y-2">
+        <span class="text-xs font-bold text-slate-700">장바구니로 전송할 상품 (<span id="modal-item-count">3</span>건):</span>
+        <div id="modal-product-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+          <!-- 동적 주입 -->
+        </div>
+      </div>
+
+      <!-- 금액 결제 예정액 -->
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+        <span class="text-slate-600">총 예상 상품 금액</span>
+        <span id="modal-total-price" class="font-black text-slate-900 text-base">17,380원</span>
+      </div>
+
+      <!-- 공정위 필수 표기 고지 -->
+      <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200/80 text-[11px] text-amber-800 leading-relaxed">
+        📢 <strong>공정거래위원회 지침 안내</strong><br>
+        본 서비스는 쿠팡 파트너스 링크를 생성하며, 링크를 통해 발생한 구매에 대해 서비스 운영자에게 소정의 수수료가 지급됩니다. (구매자 추가 비용 0원)
+      </div>
+
+      <!-- 액션 버튼 -->
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeCoupangBridgeModal()" class="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          닫기
+        </button>
+        <button onclick="executeCoupangRedirect()" class="flex-[2] py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs shadow-md shadow-red-600/30 flex items-center justify-center gap-1.5 transition">
+          <span>쿠팡 장바구니로 담기</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. 찜 목록 (북마크) 모달 ================= -->
+  <div id="bookmark-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h4 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+          <span>❤️ 내가 찜한 레시피</span>
+        </h4>
+        <button onclick="closeBookmarkModal()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="bookmark-list" class="space-y-2 max-h-64 overflow-y-auto">
+        <!-- 찜 목록 렌더링 -->
+      </div>
+      <button onclick="closeBookmarkModal()" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+        닫기
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 7. JavaScript 인터랙션 로직 ================= -->
+  <script>
+    // --- 7-1. 목업 레시피 데이터 (트렌드 & 제휴 상품 포함) ---
+    const recipes = [
+      {
+        id: "recipe-1",
+        title: "전자레인지 3분 30초! 대파 대패삼겹 덮밥",
+        category: "초간단 요리",
+        tags: ["전자레인지", "자취생", "10분컷"],
+        viralBadge: "🔥 Shorts 340만뷰",
+        rankBadge: "1위 (▲2)",
+        creator: "자취요리신",
+        cookTime: "10분",
+        difficulty: "초급",
+        servings: "1인분",
+        likes: 1248,
+        isLiked: false,
+        summary: "불 쓰기 귀찮은 날 1위! 내열용기에 대파 송송 썰고 대패삼겹살 올려 3분 30초만 돌리면 고깃집 불고기 덮밥 완성",
+        thumbnail: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80",
+        tips: "전자레인지 700W 기준 3분 30초, 1000W는 2분 40초면 충분합니다. 랩은 헐렁하게 덮어 수분이 날아가지 않게 하세요.",
+        ingredients: [
+          { id: "ing-1", name: "대패 삼겹살", amount: "150g", price: 10900, isChecked: true, required: true, productTitle: "[로켓프레시] 한돈 냉동 대패삼겹살 1kg" },
+          { id: "ing-2", name: "깐 대파", amount: "1대", price: 1980, isChecked: true, required: true, productTitle: "[로켓프레시] 싱싱 깐대파 500g" },
+          { id: "ing-3", name: "이금기 프리미엄 굴소스", amount: "1 큰술", price: 4500, isChecked: true, required: true, productTitle: "이금기 프리미엄 굴소스 510g" },
+          { id: "ing-4", name: "고소한 참기름", amount: "0.5 큰술", price: 3800, isChecked: false, required: false, productTitle: "오뚜기 고소한 참기름 320ml" },
+          { id: "ing-5", name: "햇반 백미밥", amount: "1개", price: 1200, isChecked: true, required: false, productTitle: "CJ 햇반 210g x 12개입" }
+        ],
+        steps: [
+          { step: 1, text: "대파 1대를 두툼하게 어슷썰기하여 전자레인지용 깊은 그릇 바닥에 넉넉히 깝니다." },
+          { step: 2, text: "그 위에 대패삼겹살 150g을 겹치지 않게 펼쳐 얹은 뒤 굴소스 1 큰술을 골고루 둘러줍니다." },
+          { step: 3, text: "랩을 씌우고 포크로 숨구멍 3~4개를 뚫어 전자레인지에서 3분 30초간 가열합니다." },
+          { step: 4, text: "따뜻한 밥 위에 국물과 함께 얹고 참기름 살짝 두르면 완성!" }
+        ],
+        reviews: [
+          { id: 1, nickname: "자취5년차_배고파", badge: "😍 인생요리", rating: 5, date: "10분 전", content: "설거지 그릇 하나만 나와서 진짜 감동입니다. 삼겹살 기름에 파가 달달 볶아진 맛 나요!", tip: "청양고추 반 개 썰어 넣으면 느끼함 싹 잡힙니다!", likes: 14 },
+          { id: 2, nickname: "요알못_탈출기", badge: "😋 맛있음", rating: 5, date: "1시간 전", content: "배달 1시간 기다릴 바에 쿠팡으로 고기랑 파 시켜서 바로 해먹음. 돈도 굳었음", tip: "간장 0.5스푼 추가하면 간이 딱 맞아요", likes: 8 },
+          { id: 3, nickname: "전자렌지장인", badge: "💀 망했음", rating: 3, date: "어제", content: "밀폐용기 뚜껑 꽉 닫고 돌렸다가 폭발할 뻔 ㅠㅠ 랩 꼭 헐렁하게 씌우세요", tip: "뚜껑 닫지 마세요!", likes: 21 }
+        ]
+      },
+      {
+        id: "recipe-2",
+        title: "신라면 투움바 파스타 (원팬 7분컷)",
+        category: "편의점 꿀조합",
+        tags: ["편의점꿀조합", "원팬", "10분컷"],
+        viralBadge: "🔥 TikTok 역주행",
+        rankBadge: "2위 (NEW)",
+        creator: "먹방요정",
+        cookTime: "8분",
+        difficulty: "초급",
+        servings: "1인분",
+        likes: 982,
+        isLiked: false,
+        summary: "아웃백 투움바 맛 90% 싱크로율! 신라면 수프와 우유, 치즈의 미친 조합",
+        thumbnail: "https://images.unsplash.com/photo-1621996346565-e3d5d6281691?w=600&auto=format&fit=crop&q=80",
+        tips: "우유는 끓어 넘치기 쉬우니 중약불에서 저어가며 끓여주세요.",
+        ingredients: [
+          { id: "ing-21", name: "농심 신라면", amount: "1봉지", price: 4200, isChecked: true, required: true, productTitle: "농심 신라면 5입" },
+          { id: "ing-22", name: "서울우유 1급A", amount: "300ml", price: 2950, isChecked: true, required: true, productTitle: "[로켓프레시] 서울우유 1L" },
+          { id: "ing-23", name: "체다 슬라이스 치즈", amount: "2장", price: 4800, isChecked: true, required: true, productTitle: "서울우유 체다 슬라이스 치즈 20매" },
+          { id: "ing-24", name: "칵테일 새우", amount: "6마리", price: 7900, isChecked: false, required: false, productTitle: "[로켓프레시] 칵테일 손질새우 400g" }
+        ],
+        steps: [
+          { step: 1, text: "팬에 버터나 식용유를 두르고 다진마늘과 양파, 소시지(새우)를 볶습니다." },
+          { step: 2, text: "우유 300ml와 물 100ml를 붓고 끓어오르면 라면 수프 2/3와 면을 넣습니다." },
+          { step: 3, text: "면이 알맞게 익으면 슬라이스 치즈 2장을 올리고 꾸덕해질 때까지 1분간 저어줍니다." }
+        ],
+        reviews: [
+          { id: 21, nickname: "크림파스타킬러", badge: "😍 인생요리", rating: 5, date: "30분 전", content: "진짜 아웃백 왜 가냐 소리 절로 나옵니다..", tip: "수프 1개 다 넣으면 짜요! 꼭 반이나 2/3만!", likes: 19 }
+        ]
+      },
+      {
+        id: "recipe-3",
+        title: "흑백요리사 밤 티라미수 (편의점 초간단 Ver)",
+        category: "화제의 디저트",
+        tags: ["흑백요리사", "디저트", "편의점꿀조합"],
+        viralBadge: "🔥 화제성 1위",
+        rankBadge: "3위 (▲1)",
+        creator: "나폴리맛피아",
+        cookTime: "15분",
+        difficulty: "중급",
+        servings: "2인분",
+        likes: 2130,
+        isLiked: true,
+        summary: "편의점 맛밤과 크림치즈, 다이제로 재현하는 흑백요리사 화제의 그 디저트",
+        thumbnail: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&auto=format&fit=crop&q=80",
+        tips: "밤 퓨레를 체에 한 번 밭쳐 내리면 훨씬 고급스러운 식감이 됩니다.",
+        ingredients: [
+          { id: "ing-31", name: "CJ 맛밤", amount: "1봉지(80g)", price: 3200, isChecked: true, required: true, productTitle: "CJ 맛밤 80g x 4봉" },
+          { id: "ing-32", name: "필라델피아 크림치즈", amount: "100g", price: 5400, isChecked: true, required: true, productTitle: "필라델피아 플레인 크림치즈 200g" },
+          { id: "ing-33", name: "오리온 다이제 초코", amount: "4개", price: 1800, isChecked: true, required: true, productTitle: "오리온 다이제 초코 194g" },
+          { id: "ing-34", name: "에스프레소 or 카누", amount: "1스틱", price: 2500, isChecked: false, required: true, productTitle: "맥심 카누 마일드로스트 10T" }
+        ],
+        steps: [
+          { step: 1, text: "맛밤과 우유 50ml를 믹서에 갈아 부드러운 밤 퓨레를 만듭니다." },
+          { step: 2, text: "크림치즈와 밤 퓨레를 1:1로 섞어 밤 크림을 완성합니다." },
+          { step: 3, text: "컵에 에스프레소에 적신 다이제를 깔고 밤 크림을 층층이 쌓은 뒤 코코아 가루를 뿌립니다." }
+        ],
+        reviews: [
+          { id: 31, nickname: "디저트러버", badge: "😍 인생요리", rating: 5, date: "3시간 전", content: "카페에서 9천원에 파는 티라미수보다 밤 풍미가 진해요!", tip: "냉동실에 30분 살짝 얼리면 아이스크림 케이크 같아요", likes: 25 }
+        ]
+      }
+    ];
+
+    let currentRecipe = recipes[0];
+    let activeTab = 'trend';
+    let currentRating = 5;
+    let timerInterval = null;
+    let timerSeconds = 210; // 3분 30초
+
+    // --- 7-2. 초기화 및 렌더링 ---
+    document.addEventListener("DOMContentLoaded", () => {
+      renderRecipeGrid(recipes);
+      updateBookmarkBadge();
+    });
+
+    // 뷰포트 프리뷰 토글 함수
+    function setViewport(type) {
+      const wrapper = document.getElementById('viewport-wrapper');
+      const bMobile = document.getElementById('btn-vp-mobile');
+      const bTablet = document.getElementById('btn-vp-tablet');
+      const bFull = document.getElementById('btn-vp-full');
+
+      [bMobile, bTablet, bFull].forEach(b => {
+        b.className = "px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center gap-1";
+      });
+
+      if (type === 'mobile') {
+        wrapper.style.maxWidth = '390px';
+        wrapper.style.borderLeft = '1px solid #e2e8f0';
+        wrapper.style.borderRight = '1px solid #e2e8f0';
+        wrapper.style.boxShadow = '0 20px 25px -5px rgb(0 0 0 / 0.1)';
+        bMobile.className = "px-2.5 py-1 rounded bg-brand-500 text-white font-medium transition flex items-center gap-1";
+      } else if (type === 'tablet') {
+        wrapper.style.maxWidth = '768px';
+        wrapper.style.borderLeft = '1px solid #e2e8f0';
+        wrapper.style.borderRight = '1px solid #e2e8f0';
+        wrapper.style.boxShadow = '0 20px 25px -5px rgb(0 0 0 / 0.1)';
+        bTablet.className = "px-2.5 py-1 rounded bg-brand-500 text-white font-medium transition flex items-center gap-1";
+      } else {
+        wrapper.style.maxWidth = '100%';
+        wrapper.style.borderLeft = 'none';
+        wrapper.style.borderRight = 'none';
+        wrapper.style.boxShadow = 'none';
+        bFull.className = "px-2.5 py-1 rounded bg-brand-500 text-white font-medium transition flex items-center gap-1";
+      }
+    }
+
+    // 모바일 검색창 토글
+    function toggleMobileSearch() {
+      const box = document.getElementById('mobileSearchBox');
+      box.classList.toggle('hidden');
+    }
+
+    // 탭 변경
+    function changeTab(tabKey) {
+      activeTab = tabKey;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition";
+      });
+      const activeBtn = document.getElementById(`tab-${tabKey}`);
+      if(activeBtn) {
+        activeBtn.className = "tab-btn px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white flex items-center gap-1.5 flex-shrink-0 shadow-sm transition";
+      }
+
+      if (tabKey === 'likes') {
+        const sorted = [...recipes].sort((a,b) => b.likes - a.likes);
+        renderRecipeGrid(sorted);
+      } else if (tabKey === 'quick') {
+        renderRecipeGrid(recipes.filter(r => r.tags.includes('10분컷')));
+      } else if (tabKey === 'convenience') {
+        renderRecipeGrid(recipes.filter(r => r.tags.includes('편의점꿀조합')));
+      } else {
+        renderRecipeGrid(recipes);
+      }
+    }
+
+    // 태그 필터
+    function filterByTag(tag) {
+      document.querySelectorAll('.tag-chip').forEach(c => {
+        c.className = "tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200";
+      });
+      event.target.className = "tag-chip active px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-600 border border-brand-200";
+
+      if (tag === 'ALL') {
+        renderRecipeGrid(recipes);
+      } else {
+        const filtered = recipes.filter(r => r.tags.includes(tag));
+        renderRecipeGrid(filtered);
+      }
+    }
+
+    // 검색 핸들러
+    function handleSearch(keyword) {
+      const query = keyword.trim().toLowerCase();
+      if (!query) {
+        renderRecipeGrid(recipes);
+        return;
+      }
+      const matched = recipes.filter(r => {
+        const titleMatch = r.title.toLowerCase().includes(query);
+        const ingredientMatch = r.ingredients.some(ing => ing.name.toLowerCase().includes(query));
+        return titleMatch || ingredientMatch;
+      });
+      renderRecipeGrid(matched);
+    }
+
+    // 레시피 카드 그리드 렌더링
+    function renderRecipeGrid(list) {
+      const grid = document.getElementById('recipe-grid');
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-400 space-y-2">
+            <span class="text-4xl block">🔍</span>
+            <p class="font-bold text-sm text-slate-600">조건에 맞는 유행 레시피를 찾지 못했습니다.</p>
+            <p class="text-xs">다른 검색어나 재료명(예: 대파, 스팸)으로 검색해 보세요!</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = list.map(recipe => `
+        <article class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col group">
+          <!-- 썸네일 영역 -->
+          <div class="relative h-48 overflow-hidden bg-slate-100 cursor-pointer" onclick="openRecipeDetail('${recipe.id}')">
+            <img src="${recipe.thumbnail}" alt="${recipe.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/20"></div>
+            
+            <!-- 상단 뱃지들 -->
+            <div class="absolute top-3 left-3 flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-900/80 backdrop-blur-md text-amber-300 border border-white/10">
+                ${recipe.rankBadge}
+              </span>
+              <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-600/90 text-white backdrop-blur-md">
+                ${recipe.viralBadge}
+              </span>
+            </div>
+
+            <!-- 찜 하트 버튼 -->
+            <button onclick="toggleCardLike(event, '${recipe.id}')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition">
+              <svg class="w-4 h-4 ${recipe.isLiked ? 'text-rose-500 fill-current' : 'text-white'}" fill="${recipe.isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </button>
+
+            <!-- 썸네일 하단 메타 -->
+            <div class="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between text-xs font-medium">
+              <span class="flex items-center gap-1">⏱️ ${recipe.cookTime}</span>
+              <span class="flex items-center gap-1">⭐ ${recipe.reviews.length > 0 ? (recipe.reviews.reduce((a,c)=>a+c.rating,0)/recipe.reviews.length).toFixed(1) : '5.0'} (리뷰 ${recipe.reviews.length})</span>
+            </div>
+          </div>
+
+          <!-- 본문 영역 -->
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 text-xs text-slate-400">
+                <span class="font-medium text-brand-600">${recipe.category}</span>
+                <span>•</span>
+                <span>출처: ${recipe.creator}</span>
+              </div>
+              <h3 onclick="openRecipeDetail('${recipe.id}')" class="font-bold text-slate-900 text-base leading-snug group-hover:text-brand-600 transition cursor-pointer line-clamp-1">
+                ${recipe.title}
+              </h3>
+              <p class="text-xs text-slate-500 line-clamp-2">
+                ${recipe.summary}
+              </p>
+            </div>
+
+            <!-- 하단 재료 원클릭 장바구니 미리보기 및 액션 -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+              <div class="text-xs text-slate-500">
+                <span class="font-bold text-slate-800">${recipe.ingredients.length}개</span> 재료 일괄구매
+              </div>
+              <button onclick="openRecipeDetail('${recipe.id}')" class="px-3.5 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs transition flex items-center gap-1">
+                <span>조리법 & 장바구니</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // --- 7-3. 레시피 상세 페이지 이동 ---
+    function openRecipeDetail(recipeId) {
+      const found = recipes.find(r => r.id === recipeId);
+      if (!found) return;
+      currentRecipe = found;
+
+      // 뷰 토글
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('detail-view').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 상세 데이터 바인딩
+      document.getElementById('detail-title').innerText = found.title;
+      document.getElementById('detail-desc').innerText = found.summary;
+      document.getElementById('detail-creator').innerText = found.creator;
+      document.getElementById('detail-badge-viral').innerText = found.viralBadge;
+      document.getElementById('detail-category').innerText = found.category;
+      document.getElementById('detail-time').innerText = `⏱️ ${found.cookTime}`;
+      document.getElementById('detail-difficulty').innerText = `⭐ ${found.difficulty}`;
+      document.getElementById('detail-servings').innerText = `🍽️ ${found.servings}`;
+      document.getElementById('detail-like-count').innerText = found.likes.toLocaleString();
+      document.getElementById('detail-tip-text').innerText = found.tips;
+
+      renderIngredientChecklist(found.ingredients);
+      renderRecipeSteps(found.steps);
+      renderReviews(found.reviews);
+      resetTimer();
+    }
+
+    function showHomeView() {
+      document.getElementById('detail-view').classList.add('hidden');
+      document.getElementById('home-view').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- 7-4. 재료 체크리스트 & 원클릭 장바구니 연동 로직 ---
+    function renderIngredientChecklist(ingredients) {
+      const container = document.getElementById('ingredient-checklist');
+      container.innerHTML = ingredients.map(ing => `
+        <label class="py-2.5 px-2 flex items-center justify-between gap-3 hover:bg-slate-50 rounded-lg cursor-pointer transition select-none">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <input type="checkbox" onchange="toggleIngredient('${ing.id}')" ${ing.isChecked ? 'checked' : ''} 
+                   class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
+            <div class="truncate">
+              <span class="text-xs font-bold text-slate-800">${ing.name}</span>
+              <span class="text-[11px] text-slate-400 ml-1">(${ing.amount})</span>
+              ${ing.required ? '<span class="text-[10px] text-brand-600 font-semibold ml-1">필수</span>' : '<span class="text-[10px] text-slate-400 ml-1">선택</span>'}
+            </div>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <span class="text-xs font-semibold text-slate-700">${ing.price.toLocaleString()}원</span>
+            <span class="block text-[10px] text-rose-500 font-medium">로켓</span>
+          </div>
+        </label>
+      `).join('');
+
+      updatePriceSummary();
+    }
+
+    function toggleIngredient(ingId) {
+      const ing = currentRecipe.ingredients.find(i => i.id === ingId);
+      if (ing) {
+        ing.isChecked = !ing.isChecked;
+      }
+      updatePriceSummary();
+    }
+
+    function toggleAllIngredients(checked) {
+      currentRecipe.ingredients.forEach(i => i.isChecked = checked);
+      renderIngredientChecklist(currentRecipe.ingredients);
+    }
+
+    function updatePriceSummary() {
+      const selected = currentRecipe.ingredients.filter(i => i.isChecked);
+      const total = selected.reduce((sum, item) => sum + item.price, 0);
+
+      document.getElementById('selected-count-label').innerText = `${selected.length}개 / ${currentRecipe.ingredients.length}개`;
+      document.getElementById('selected-price-total').innerText = total.toLocaleString();
+    }
+
+    // 쿠팡 파트너스 브릿지 모달 오픈
+    function openCoupangBridgeModal() {
+      const selected = currentRecipe.ingredients.filter(i => i.isChecked);
+      if (selected.length === 0) {
+        alert("장바구니에 담을 재료를 1개 이상 선택해 주세요!");
+        return;
+      }
+
+      document.getElementById('modal-item-count').innerText = selected.length;
+      const total = selected.reduce((sum, i) => sum + i.price, 0);
+      document.getElementById('modal-total-price').innerText = `${total.toLocaleString()}원`;
+
+      const listContainer = document.getElementById('modal-product-list');
+      listContainer.innerHTML = selected.map(item => `
+        <div class="p-2 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
+          <div class="truncate pr-2">
+            <span class="font-bold text-slate-800">${item.name}</span>
+            <span class="text-slate-500 text-[11px] block truncate">${item.productTitle}</span>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <span class="font-bold text-slate-900">${item.price.toLocaleString()}원</span>
+            <span class="text-[10px] text-red-600 block font-semibold">로켓프레시</span>
+          </div>
+        </div>
+      `).join('');
+
+      const modal = document.getElementById('coupang-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCoupangBridgeModal() {
+      const modal = document.getElementById('coupang-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function executeCoupangRedirect() {
+      alert("✅ [쿠팡 파트너스 연동 성공]\n선택하신 재료들이 제휴 장바구니로 안전하게 전송되었습니다.\n(실제 서비스에서는 쿠팡 파트너스 딥링크로 새창 연결됩니다)");
+      closeCoupangBridgeModal();
+    }
+
+    function quickAddCart(recipe) {
+      currentRecipe = recipe;
+      openCoupangBridgeModal();
+    }
+
+    // --- 7-5. 조리 단계 & 타이머 로직 ---
+    function renderRecipeSteps(steps) {
+      const container = document.getElementById('recipe-steps-list');
+      container.innerHTML = steps.map(s => `
+        <div class="flex items-start gap-3.5 p-3 rounded-xl hover:bg-slate-50 transition border border-transparent hover:border-slate-100">
+          <span class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-black flex items-center justify-center">
+            ${s.step}
+          </span>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium pt-0.5">
+            ${s.text}
+          </p>
+        </div>
+      `).join('');
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('timer-btn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.innerText = "계속";
+      } else {
+        btn.innerText = "정지";
+        timerInterval = setInterval(() => {
+          if (timerSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.innerText = "완료!";
+            alert("⏰ [맛트렌드 조리 알림] 타이머가 완료되었습니다! 맛있게 드세요!");
+            return;
+          }
+          timerSeconds--;
+          updateTimerDisplay();
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = 210;
+      updateTimerDisplay();
+      const btn = document.getElementById('timer-btn');
+      if (btn) btn.innerText = "시작";
+    }
+
+    function updateTimerDisplay() {
+      const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+      const s = String(timerSeconds % 60).padStart(2, '0');
+      const display = document.getElementById('timer-display');
+      if (display) display.innerText = `${m}:${s}`;
+    }
+
+    // --- 7-6. 익명 리뷰 & 꿀팁 작성/렌더링 ---
+    function renderReviews(reviews) {
+      const badge = document.getElementById('review-count-badge');
+      if (badge) badge.innerText = `${reviews.length}개`;
+
+      const feed = document.getElementById('review-feed');
+      feed.innerHTML = reviews.map(r => `
+        <div class="pt-3 pb-2 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-xs text-slate-800">${r.nickname}</span>
+              <span class="text-[11px] font-semibold px-2 py-0.2 rounded-md ${getBadgeStyle(r.badge)}">
+                ${r.badge}
+              </span>
+              <span class="text-amber-400 text-xs tracking-tighter">${'★'.repeat(r.rating)}</span>
+            </div>
+            <span class="text-[11px] text-slate-400">${r.date}</span>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            ${r.content}
+          </p>
+
+          ${r.tip ? `
+            <div class="bg-amber-50/80 rounded-lg p-2 text-[11px] text-amber-900 border border-amber-200/60 flex items-start gap-1.5 mt-1">
+              <span>💡</span>
+              <div><strong class="font-semibold">실전자 꿀팁:</strong> ${r.tip}</div>
+            </div>
+          ` : ''}
+
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button onclick="likeReview(this)" class="text-[11px] text-slate-400 hover:text-brand-600 flex items-center gap-1">
+              <span>도움돼요 👍</span>
+              <span class="font-semibold">${r.likes}</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getBadgeStyle(badge) {
+      if (badge.includes('인생요리')) return 'bg-rose-50 text-rose-600 border border-rose-200';
+      if (badge.includes('맛있')) return 'bg-amber-50 text-amber-700 border border-amber-200';
+      if (badge.includes('망했')) return 'bg-slate-100 text-slate-600 border border-slate-300';
+      return 'bg-blue-50 text-blue-600 border border-blue-200';
+    }
+
+    function setRating(score) {
+      currentRating = score;
+      const stars = document.querySelectorAll('.star-btn');
+      stars.forEach((star, index) => {
+        star.className = index < score ? 'star-btn text-amber-400 text-base' : 'star-btn text-slate-200 text-base';
+      });
+      const texts = ['1점 (아쉬워요)', '2점 (보통 이하)', '3점 (보통이에요)', '4점 (맛있어요)', '5점 (최고예요!)'];
+      document.getElementById('rating-text').innerText = texts[score - 1];
+    }
+
+    function generateRandomNickname() {
+      const adjectives = ["배고픈", "요리천재", "자취생", "대파송송", "라면장인", "흑백미식가", "칼퇴요리사", "야식마스터"];
+      const nouns = ["곰돌이", "호랑이", "비룡", "펭귄", "토끼", "다람쥐", "판다", "너구리"];
+      const randNum = Math.floor(Math.random() * 900) + 100;
+      const randomNick = `${adjectives[Math.floor(Math.random()*adjectives.length)]}_${nouns[Math.floor(Math.random()*nouns.length)]}${randNum}`;
+      document.getElementById('review-nickname').value = randomNick;
+    }
+
+    function submitAnonymousReview(e) {
+      e.preventDefault();
+      const nickname = document.getElementById('review-nickname').value;
+      const password = document.getElementById('review-password').value;
+      const content = document.getElementById('review-content').value;
+      const tip = document.getElementById('review-tip').value;
+      const badgeElem = document.querySelector('input[name="review-badge"]:checked');
+      const badge = badgeElem ? badgeElem.value : '맛있어요';
+
+      if (!nickname || !password || !content) {
+        alert("닉네임, 비밀번호, 후기 내용을 모두 입력해 주세요.");
+        return;
+      }
+
+      const newReview = {
+        id: Date.now(),
+        nickname: nickname,
+        badge: badge === '인생요리' ? '😍 인생요리' : badge === '맛있어요' ? '😋 맛있음' : badge === '망했어요' ? '💀 망했음' : '😐 쏘쏘',
+        rating: currentRating,
+        date: "방금 전",
+        content: content,
+        tip: tip || null,
+        likes: 0
+      };
+
+      currentRecipe.reviews.unshift(newReview);
+      renderReviews(currentRecipe.reviews);
+
+      // 폼 리셋
+      document.getElementById('review-content').value = '';
+      document.getElementById('review-tip').value = '';
+      alert("🎉 솔직한 익명 리뷰가 성공적으로 등록되었습니다!");
+    }
+
+    function likeReview(btn) {
+      const span = btn.querySelector('span:last-child');
+      let count = parseInt(span.innerText);
+      span.innerText = count + 1;
+      btn.classList.add('text-brand-600', 'font-bold');
+    }
+
+    // --- 7-7. 좋아요 & 북마크(찜) ---
+    function toggleCardLike(e, recipeId) {
+      e.stopPropagation();
+      const found = recipes.find(r => r.id === recipeId);
+      if (found) {
+        found.isLiked = !found.isLiked;
+        found.likes += found.isLiked ? 1 : -1;
+        renderRecipeGrid(recipes);
+        updateBookmarkBadge();
+      }
+    }
+
+    function toggleCurrentRecipeLike() {
+      currentRecipe.isLiked = !currentRecipe.isLiked;
+      currentRecipe.likes += currentRecipe.isLiked ? 1 : -1;
+      document.getElementById('detail-like-count').innerText = currentRecipe.likes.toLocaleString();
+      renderRecipeGrid(recipes);
+      updateBookmarkBadge();
+    }
+
+    function updateBookmarkBadge() {
+      const likedCount = recipes.filter(r => r.isLiked).length;
+      const badge = document.getElementById('bookmark-badge');
+      if (likedCount > 0) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function openBookmarkModal() {
+      const liked = recipes.filter(r => r.isLiked);
+      const list = document.getElementById('bookmark-list');
+      if (liked.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">아직 찜한 레시피가 없습니다. 하트를 눌러보세요!</p>`;
+      } else {
+        list.innerHTML = liked.map(r => `
+          <div onclick="closeBookmarkModal(); openRecipeDetail('${r.id}')" class="p-2.5 rounded-xl border border-slate-200 flex items-center gap-3 hover:bg-slate-50 cursor-pointer transition">
+            <img src="${r.thumbnail}" class="w-12 h-12 rounded-lg object-cover">
+            <div class="flex-1 min-w-0">
+              <h5 class="text-xs font-bold text-slate-900 truncate">${r.title}</h5>
+              <span class="text-[11px] text-slate-400">⏱️ ${r.cookTime} • 재료 ${r.ingredients.length}개</span>
+            </div>
+            <span class="text-xs font-bold text-brand-600">보기 →</span>
+          </div>
+        `).join('');
+      }
+      document.getElementById('bookmark-modal').classList.remove('hidden');
+      document.getElementById('bookmark-modal').classList.add('flex');
+    }
+
+    function closeBookmarkModal() {
+      document.getElementById('bookmark-modal').classList.add('hidden');
+      document.getElementById('bookmark-modal').classList.remove('flex');
+    }
+
+    function copyShareUrl() {
+      navigator.clipboard.writeText(window.location.href);
+      alert("🔗 레시피 링크가 클립보드에 복사되었습니다!");
+    }
+  </script>
+</body>
+</html>
