@@ -6,7 +6,7 @@
   <title>EatTrend (맛트렌드) - 실시간 유행 레시피 & 원클릭 재료 장바구니</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts (Pretendard & Inter) -->
+  <!-- Google Fonts (Pretendard) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.min.css">
   <script>
     tailwind.config = {
@@ -47,7 +47,7 @@
   <aside aria-label="반응형 프리뷰 모드 제어 바" class="bg-slate-900 text-slate-200 text-xs px-4 py-2 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 sticky top-0 z-50 shadow-md">
     <div class="flex items-center gap-2">
       <span class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-      <span class="font-bold text-white tracking-wide">EatTrend Demo UI v1.0</span>
+      <span class="font-bold text-white tracking-wide">EatTrend Demo UI v1.1</span>
       <span class="hidden sm:inline text-slate-400">| 반응형 뷰포트 시뮬레이션:</span>
     </div>
     <div class="flex items-center gap-1.5 bg-slate-800 p-1 rounded-lg border border-slate-700">
@@ -57,7 +57,7 @@
       </button>
       <button onclick="setViewport('tablet')" id="btn-vp-tablet" class="px-2.5 py-1 rounded text-slate-300 hover:text-white transition flex items-center gap-1">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-        태블릿 (768px)
+        태블릿 (820px)
       </button>
       <button onclick="setViewport('full')" id="btn-vp-full" class="px-2.5 py-1 rounded bg-brand-500 text-white font-medium transition flex items-center gap-1">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -71,7 +71,7 @@
 
     <!-- ================= 2. 메인 헤더 ================= -->
     <header class="bg-white/95 backdrop-blur sticky top-8 z-40 border-b border-slate-200">
-      <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <!-- 로고 -->
         <a href="#" onclick="showHomeView(); return false;" class="flex items-center gap-2 flex-shrink-0 group">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition">
@@ -86,7 +86,7 @@
         <!-- 통합 검색바 (요리명 or 냉장고 재료) -->
         <div class="flex-1 max-w-md hidden md:block">
           <div class="relative">
-            <input type="text" id="searchInput" onkeyup="handleSearch(this.value)" placeholder="요리명 또는 냉장고 재료 검색 (예: 대파, 스팸, 덮밥)" 
+            <input type="text" id="searchInput" onkeyup="handleSearch(this.value)" placeholder="요리명 또는 냉장고 재료 검색 (예: 대파, 스팸, 덮밥, 치즈)" 
                    class="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
@@ -94,6 +94,12 @@
 
         <!-- 우측 액션 & 제휴 안내 -->
         <div class="flex items-center gap-2">
+          <!-- 모바일 필터 토글 버튼 (화면 작을 때만 노출) -->
+          <button onclick="toggleMobileFilter()" class="lg:hidden px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition">
+            <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+            <span>필터 / 정렬</span>
+          </button>
+
           <!-- 모바일 검색 토글 버튼 -->
           <button onclick="toggleMobileSearch()" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -104,7 +110,7 @@
             <span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500"></span>
           </button>
 
-          <div class="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+          <div class="hidden xl:flex items-center gap-1.5 text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
             <span>로켓배송 원클릭 연동</span>
           </div>
@@ -119,21 +125,21 @@
     </header>
 
     <!-- ================= 3. 메인 콘텐츠 컨테이너 ================= -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
 
       <!-- ================= 3-A. 홈 화면 뷰 (HOME VIEW) ================= -->
-      <section id="home-view" class="space-y-8">
+      <section id="home-view" class="space-y-6">
 
         <!-- 3-A-1. 히어로 배너: 오늘의 실시간 1위 바이럴 레시피 -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-brand-950 text-white p-6 sm:p-8 shadow-xl">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-brand-950 text-white p-6 sm:p-7 shadow-xl">
           <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
           <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div class="space-y-3 max-w-xl">
+            <div class="space-y-2.5 max-w-xl">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-brand-500 text-white flex items-center gap-1">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-brand-500 text-white flex items-center gap-1">
                   🔥 실시간 1위 급상승
                 </span>
-                <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-amber-300">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/10 text-amber-300">
                   YouTube Shorts 340만 뷰
                 </span>
                 <span class="text-xs text-slate-300">2026.10 트렌드</span>
@@ -142,7 +148,7 @@
                 전자레인지 3분 30초! <br class="hidden sm:inline">
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">대파 대패삼겹살 덮밥</span>
               </h1>
-              <p class="text-sm text-slate-300 line-clamp-2">
+              <p class="text-xs sm:text-sm text-slate-300 line-clamp-2">
                 프라이팬에 기름 튈 걱정 ZERO! 내열용기에 대파 깔고 삼겹살 올려 전자레인지 돌리면 끝나는 역대급 자취 요리
               </p>
               <div class="flex items-center gap-4 text-xs text-slate-300 pt-1">
@@ -152,8 +158,8 @@
               </div>
             </div>
             
-            <div class="flex flex-col sm:flex-row md:flex-col gap-3 w-full md:w-auto flex-shrink-0">
-              <button onclick="openRecipeDetail(recipes[0].id)" class="w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-amber-500 text-white font-bold text-sm shadow-lg shadow-brand-500/30 hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2">
+            <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 w-full md:w-auto flex-shrink-0">
+              <button onclick="openRecipeDetail(recipes[0].id)" class="w-full px-5 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-amber-500 text-white font-bold text-sm shadow-lg shadow-brand-500/30 hover:brightness-110 active:scale-95 transition flex items-center justify-center gap-2">
                 <span>조리법 & 원클릭 장바구니 보기</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
               </button>
@@ -165,40 +171,143 @@
           </div>
         </div>
 
-        <!-- 3-A-2. 랭킹 탭 & 카테고리 필터 -->
-        <div class="space-y-4">
-          <!-- 상위 메인 탭 -->
-          <div class="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto hide-scrollbar">
-            <button onclick="changeTab('trend')" id="tab-trend" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white flex items-center gap-1.5 flex-shrink-0 shadow-sm transition">
-              <span>🔥 실시간 트렌드 TOP 10</span>
-              <span class="text-xs px-1.5 py-0.2 rounded-full bg-brand-500 text-white">LIVE</span>
-            </button>
-            <button onclick="changeTab('likes')" id="tab-likes" class="tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition">
-              <span>❤️ 명예의 전당 (좋아요 순)</span>
-            </button>
-            <button onclick="changeTab('quick')" id="tab-quick" class="tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition">
-              <span>⏱️ 10분컷 초간단</span>
-            </button>
-            <button onclick="changeTab('convenience')" id="tab-convenience" class="tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition">
-              <span>🏪 편의점 꿀조합</span>
-            </button>
+        <!-- ================= 3-A-2. 메인 2컬럼 레이아웃: [왼쪽 사이드바 필터] vs [오른쪽 레시피 카드 목록] ================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <!-- 👈👈 [왼쪽 사이드바]: 실시간, 좋아요순, 평점순, 카테고리, 태그 필터 패널 -->
+          <aside id="sidebar-filter-panel" class="hidden lg:block lg:col-span-3 space-y-5 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm sticky top-24">
+            
+            <!-- 사이드바 상단 헤더 & 필터 초기화 -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                <h3 class="font-extrabold text-slate-900 text-sm">레시피 탐색 & 필터</h3>
+              </div>
+              <button onclick="resetAllFilters()" class="text-xs text-slate-400 hover:text-brand-600 transition flex items-center gap-1" title="필터 초기화">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span>초기화</span>
+              </button>
+            </div>
+
+            <!-- 1. 정렬 기준 (Sort Options) -->
+            <div class="space-y-2">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">정렬 기준</span>
+              <div class="space-y-1">
+                <button onclick="setSort('trend')" id="sort-trend" class="sort-btn w-full text-left px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white flex items-center justify-between transition">
+                  <span class="flex items-center gap-2">🔥 실시간 트렌드순</span>
+                  <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
+                </button>
+                <button onclick="setSort('likes')" id="sort-likes" class="sort-btn w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span class="flex items-center gap-2">❤️ 좋아요 많은 순</span>
+                  <span class="text-[11px] text-slate-400">인기</span>
+                </button>
+                <button onclick="setSort('rating')" id="sort-rating" class="sort-btn w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span class="flex items-center gap-2">⭐ 리뷰 평점 높은 순</span>
+                  <span class="text-[11px] text-amber-500 font-bold">4.8+</span>
+                </button>
+                <button onclick="setSort('time')" id="sort-time" class="sort-btn w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span class="flex items-center gap-2">⏱️ 조리시간 짧은 순</span>
+                  <span class="text-[11px] text-slate-400">초스피드</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. 카테고리별 선택 (Category Options) -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">카테고리</span>
+              <div class="space-y-1" id="category-list">
+                <button onclick="setCategory('ALL')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-50 text-brand-700 flex items-center justify-between transition">
+                  <span>전체 카테고리</span>
+                  <span id="cat-count-all" class="text-[11px] bg-brand-200/60 px-1.5 py-0.2 rounded-full">8</span>
+                </button>
+                <button onclick="setCategory('초간단 자취요리')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span>🍳 초간단 자취요리</span>
+                  <span class="text-[11px] text-slate-400">2</span>
+                </button>
+                <button onclick="setCategory('편의점 꿀조합')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span>🏪 편의점 꿀조합</span>
+                  <span class="text-[11px] text-slate-400">2</span>
+                </button>
+                <button onclick="setCategory('화제의 디저트')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span>🍰 화제의 디저트</span>
+                  <span class="text-[11px] text-slate-400">1</span>
+                </button>
+                <button onclick="setCategory('야식 & 술안주')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span>🍺 야식 & 술안주</span>
+                  <span class="text-[11px] text-slate-400">1</span>
+                </button>
+                <button onclick="setCategory('다이어트 & 헬스')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span>🥗 다이어트 & 헬스</span>
+                  <span class="text-[11px] text-slate-400">1</span>
+                </button>
+                <button onclick="setCategory('흑백요리사')" class="cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition">
+                  <span>👨‍🍳 흑백요리사 셰프픽</span>
+                  <span class="text-[11px] text-slate-400">1</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 3. 태그 필터 (Tag Chips) -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">인기 해시태그</span>
+              <div class="flex flex-wrap gap-1.5" id="tag-cloud">
+                <button onclick="toggleTag('ALL')" class="tag-btn active px-2.5 py-1 rounded-full text-xs font-bold bg-brand-500 text-white transition">#전체</button>
+                <button onclick="toggleTag('전자레인지')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#전자레인지</button>
+                <button onclick="toggleTag('원팬')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#원팬요리</button>
+                <button onclick="toggleTag('10분컷')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#10분컷</button>
+                <button onclick="toggleTag('자취생')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#자취생필수</button>
+                <button onclick="toggleTag('흑백요리사')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#흑백요리사</button>
+                <button onclick="toggleTag('가성비')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#가성비</button>
+                <button onclick="toggleTag('단백질')" class="tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition">#고단백</button>
+              </div>
+            </div>
+
+            <!-- 4. 난이도 필터 -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">난이도</span>
+              <div class="grid grid-cols-3 gap-1 text-xs">
+                <button onclick="setDifficulty('ALL')" id="diff-all" class="diff-btn py-1 rounded-lg font-bold bg-slate-800 text-white text-center transition">전체</button>
+                <button onclick="setDifficulty('초급')" id="diff-easy" class="diff-btn py-1 rounded-lg font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 text-center transition">초급</button>
+                <button onclick="setDifficulty('중급')" id="diff-mid" class="diff-btn py-1 rounded-lg font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 text-center transition">중급</button>
+              </div>
+            </div>
+
+          </aside>
+
+          <!-- 👉👉 [오른쪽 메인 콘텐츠]: 현재 적용 필터 표시줄 + 레시피 카드 그리드 -->
+          <div class="lg:col-span-9 space-y-4">
+            
+            <!-- 활성화된 필터 현황 & 결과 개수 바 -->
+            <div class="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs text-slate-400">선택 조건:</span>
+                <span id="badge-sort-status" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-900 text-white">🔥 실시간 트렌드순</span>
+                <span id="badge-cat-status" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-200">전체 카테고리</span>
+                <span id="badge-tag-status" class="hidden px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200"></span>
+                <span id="badge-diff-status" class="hidden px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700"></span>
+              </div>
+              <div class="text-xs text-slate-500">
+                총 <strong id="result-count" class="text-slate-900 font-extrabold text-sm">8</strong>개의 유행 요리
+              </div>
+            </div>
+
+            <!-- 모바일/태블릿용 가로 스크롤 퀵 카테고리 칩 (화면 좁을 때 전용) -->
+            <div class="lg:hidden flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
+              <button onclick="setCategory('ALL')" class="cat-quick-btn active px-3 py-1 rounded-full text-xs font-bold bg-brand-500 text-white flex-shrink-0">#전체</button>
+              <button onclick="setCategory('초간단 자취요리')" class="cat-quick-btn px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 flex-shrink-0">🍳 초간단</button>
+              <button onclick="setCategory('편의점 꿀조합')" class="cat-quick-btn px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 flex-shrink-0">🏪 편의점</button>
+              <button onclick="setCategory('화제의 디저트')" class="cat-quick-btn px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 flex-shrink-0">🍰 디저트</button>
+              <button onclick="setCategory('야식 & 술안주')" class="cat-quick-btn px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 flex-shrink-0">🍺 야식/안주</button>
+              <button onclick="setCategory('다이어트 & 헬스')" class="cat-quick-btn px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 flex-shrink-0">🥗 다이어트</button>
+            </div>
+
+            <!-- 레시피 카드 그리드 (PC 3열, 태블릿 2열, 모바일 1열) -->
+            <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <!-- 자바스크립트로 동적 렌더링 -->
+            </div>
+
           </div>
 
-          <!-- 태그 칩 필터 -->
-          <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
-            <span class="text-xs font-semibold text-slate-400 flex-shrink-0">추천 태그:</span>
-            <button onclick="filterByTag('ALL')" class="tag-chip active px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-600 border border-brand-200">#전체보기</button>
-            <button onclick="filterByTag('전자레인지')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#전자레인지</button>
-            <button onclick="filterByTag('원팬')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#원팬요리</button>
-            <button onclick="filterByTag('안주')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#야식/술안주</button>
-            <button onclick="filterByTag('자취생')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#자취생필수</button>
-            <button onclick="filterByTag('흑백요리사')" class="tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">#흑백요리사</button>
-          </div>
-        </div>
-
-        <!-- 3-A-3. 레시피 카드 그리드 (PC 3~4열, 태블릿 2열, 모바일 1열) -->
-        <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- 자바스크립트로 동적 렌더링 -->
         </div>
 
       </section>
@@ -362,7 +471,7 @@
                   <p class="text-xs text-slate-500 mt-0.5">회원가입 없이 솔직한 성공/실패기와 대체재료 꿀팁을 남겨보세요!</p>
                 </div>
                 <div class="text-right">
-                  <span class="text-2xl font-black text-amber-500">4.8</span>
+                  <span id="detail-rating-display" class="text-2xl font-black text-amber-500">4.8</span>
                   <span class="text-xs text-slate-400">/ 5.0</span>
                 </div>
               </div>
@@ -370,7 +479,6 @@
               <!-- 익명 리뷰 작성 폼 -->
               <form id="review-form" onsubmit="submitAnonymousReview(event)" class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <!-- 닉네임 입력 + 랜덤 생성 버튼 -->
                   <div class="flex gap-1.5">
                     <input type="text" id="review-nickname" required placeholder="익명 닉네임 (예: 배고픈자취러)" 
                            class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -378,7 +486,6 @@
                       <span>🎲</span>
                     </button>
                   </div>
-                  <!-- 삭제/수정용 4자리 비번 -->
                   <div>
                     <input type="password" id="review-password" maxlength="4" required placeholder="비밀번호 4자리 (수정/삭제용)" 
                            class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none">
@@ -421,11 +528,9 @@
                   <span id="rating-text" class="text-xs text-slate-500 font-semibold">5점 (최고예요)</span>
                 </div>
 
-                <!-- 솔직 후기 내용 -->
                 <textarea id="review-content" required rows="2" placeholder="솔직한 맛 평가를 남겨주세요. (예: 진짜 3분만에 되고 삼겹살 기름에 파가 절여져서 꿀맛입니다)"
                           class="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
 
-                <!-- 나만의 대체재료/조리 팁 (선택) -->
                 <div class="relative">
                   <input type="text" id="review-tip" placeholder="💡 나만의 실패방지 팁/대체 재료 (선택: 청양고추 반개 썰어넣으면 안 느끼해요)"
                          class="w-full bg-white border border-amber-300 rounded-lg pl-8 pr-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none">
@@ -454,7 +559,7 @@
 
     <!-- ================= 4. 푸터 ================= -->
     <footer class="bg-white border-t border-slate-200 mt-16 py-8 text-xs text-slate-500">
-      <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
         <div>
           <p class="font-bold text-slate-700">EatTrend (맛트렌드) - AI 기반 바이럴 레시피 & 제휴 커머스</p>
           <p class="mt-1 text-[11px] text-slate-400">
@@ -487,7 +592,6 @@
         </button>
       </div>
 
-      <!-- 담길 상품 확인 목록 -->
       <div class="space-y-2">
         <span class="text-xs font-bold text-slate-700">장바구니로 전송할 상품 (<span id="modal-item-count">3</span>건):</span>
         <div id="modal-product-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
@@ -495,19 +599,16 @@
         </div>
       </div>
 
-      <!-- 금액 결제 예정액 -->
       <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
         <span class="text-slate-600">총 예상 상품 금액</span>
         <span id="modal-total-price" class="font-black text-slate-900 text-base">17,380원</span>
       </div>
 
-      <!-- 공정위 필수 표기 고지 -->
       <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200/80 text-[11px] text-amber-800 leading-relaxed">
         📢 <strong>공정거래위원회 지침 안내</strong><br>
         본 서비스는 쿠팡 파트너스 링크를 생성하며, 링크를 통해 발생한 구매에 대해 서비스 운영자에게 소정의 수수료가 지급됩니다. (구매자 추가 비용 0원)
       </div>
 
-      <!-- 액션 버튼 -->
       <div class="flex gap-2 pt-1">
         <button onclick="closeCoupangBridgeModal()" class="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
           닫기
@@ -542,16 +643,17 @@
 
   <!-- ================= 7. JavaScript 인터랙션 로직 ================= -->
   <script>
-    // --- 7-1. 목업 레시피 데이터 (트렌드 & 제휴 상품 포함) ---
+    // --- 7-1. 풍부한 목업 레시피 데이터 (8종: 다양한 카테고리/태그/평점) ---
     const recipes = [
       {
         id: "recipe-1",
         title: "전자레인지 3분 30초! 대파 대패삼겹 덮밥",
-        category: "초간단 요리",
-        tags: ["전자레인지", "자취생", "10분컷"],
+        category: "초간단 자취요리",
+        tags: ["전자레인지", "자취생", "10분컷", "가성비"],
         viralBadge: "🔥 Shorts 340만뷰",
         rankBadge: "1위 (▲2)",
-        creator: "자취요리신",
+        viralScore: 98,
+        cookTimeMin: 10,
         cookTime: "10분",
         difficulty: "초급",
         servings: "1인분",
@@ -576,38 +678,39 @@
         reviews: [
           { id: 1, nickname: "자취5년차_배고파", badge: "😍 인생요리", rating: 5, date: "10분 전", content: "설거지 그릇 하나만 나와서 진짜 감동입니다. 삼겹살 기름에 파가 달달 볶아진 맛 나요!", tip: "청양고추 반 개 썰어 넣으면 느끼함 싹 잡힙니다!", likes: 14 },
           { id: 2, nickname: "요알못_탈출기", badge: "😋 맛있음", rating: 5, date: "1시간 전", content: "배달 1시간 기다릴 바에 쿠팡으로 고기랑 파 시켜서 바로 해먹음. 돈도 굳었음", tip: "간장 0.5스푼 추가하면 간이 딱 맞아요", likes: 8 },
-          { id: 3, nickname: "전자렌지장인", badge: "💀 망했음", rating: 3, date: "어제", content: "밀폐용기 뚜껑 꽉 닫고 돌렸다가 폭발할 뻔 ㅠㅠ 랩 꼭 헐렁하게 씌우세요", tip: "뚜껑 닫지 마세요!", likes: 21 }
+          { id: 3, nickname: "전자렌지장인", badge: "💀 망했음", rating: 4, date: "어제", content: "밀폐용기 뚜껑 꽉 닫고 돌렸다가 폭발할 뻔 ㅠㅠ 랩 꼭 헐렁하게 씌우세요", tip: "뚜껑 닫지 마세요!", likes: 21 }
         ]
       },
       {
         id: "recipe-2",
-        title: "신라면 투움바 파스타 (원팬 7분컷)",
+        title: "신라면 투움바 파스타 (원팬 8분컷)",
         category: "편의점 꿀조합",
-        tags: ["편의점꿀조합", "원팬", "10분컷"],
+        tags: ["편의점꿀조합", "원팬", "10분컷", "가성비"],
         viralBadge: "🔥 TikTok 역주행",
         rankBadge: "2위 (NEW)",
-        creator: "먹방요정",
+        viralScore: 92,
+        cookTimeMin: 8,
         cookTime: "8분",
         difficulty: "초급",
         servings: "1인분",
-        likes: 982,
+        likes: 1890,
         isLiked: false,
-        summary: "아웃백 투움바 맛 90% 싱크로율! 신라면 수프와 우유, 치즈의 미친 조합",
+        summary: "아웃백 투움바 맛 90% 싱크로율! 신라면 수프와 우유, 슬라이스 치즈의 미친 감칠맛",
         thumbnail: "https://images.unsplash.com/photo-1621996346565-e3d5d6281691?w=600&auto=format&fit=crop&q=80",
         tips: "우유는 끓어 넘치기 쉬우니 중약불에서 저어가며 끓여주세요.",
         ingredients: [
           { id: "ing-21", name: "농심 신라면", amount: "1봉지", price: 4200, isChecked: true, required: true, productTitle: "농심 신라면 5입" },
           { id: "ing-22", name: "서울우유 1급A", amount: "300ml", price: 2950, isChecked: true, required: true, productTitle: "[로켓프레시] 서울우유 1L" },
-          { id: "ing-23", name: "체다 슬라이스 치즈", amount: "2장", price: 4800, isChecked: true, required: true, productTitle: "서울우유 체다 슬라이스 치즈 20매" },
-          { id: "ing-24", name: "칵테일 새우", amount: "6마리", price: 7900, isChecked: false, required: false, productTitle: "[로켓프레시] 칵테일 손질새우 400g" }
+          { id: "ing-23", name: "체다 슬라이스 치즈", amount: "2장", price: 4800, isChecked: true, required: true, productTitle: "서울우유 체다 슬라이스 치즈 20매" }
         ],
         steps: [
-          { step: 1, text: "팬에 버터나 식용유를 두르고 다진마늘과 양파, 소시지(새우)를 볶습니다." },
+          { step: 1, text: "팬에 버터나 식용유를 두르고 다진마늘과 양파, 소시지를 볶습니다." },
           { step: 2, text: "우유 300ml와 물 100ml를 붓고 끓어오르면 라면 수프 2/3와 면을 넣습니다." },
           { step: 3, text: "면이 알맞게 익으면 슬라이스 치즈 2장을 올리고 꾸덕해질 때까지 1분간 저어줍니다." }
         ],
         reviews: [
-          { id: 21, nickname: "크림파스타킬러", badge: "😍 인생요리", rating: 5, date: "30분 전", content: "진짜 아웃백 왜 가냐 소리 절로 나옵니다..", tip: "수프 1개 다 넣으면 짜요! 꼭 반이나 2/3만!", likes: 19 }
+          { id: 21, nickname: "크림파스타킬러", badge: "😍 인생요리", rating: 5, date: "30분 전", content: "진짜 아웃백 왜 가냐 소리 절로 나옵니다..", tip: "수프 1개 다 넣으면 짜요! 꼭 반이나 2/3만!", likes: 19 },
+          { id: 22, nickname: "치즈덕후", badge: "😋 맛있음", rating: 5, date: "2시간 전", content: "우유 국물이 진짜 진국이에요 밥 말아먹을 뻔", tip: "후추 팍팍 뿌리세요", likes: 11 }
         ]
       },
       {
@@ -617,20 +720,20 @@
         tags: ["흑백요리사", "디저트", "편의점꿀조합"],
         viralBadge: "🔥 화제성 1위",
         rankBadge: "3위 (▲1)",
-        creator: "나폴리맛피아",
+        viralScore: 95,
+        cookTimeMin: 15,
         cookTime: "15분",
         difficulty: "중급",
         servings: "2인분",
-        likes: 2130,
+        likes: 2450,
         isLiked: true,
-        summary: "편의점 맛밤과 크림치즈, 다이제로 재현하는 흑백요리사 화제의 그 디저트",
+        summary: "편의점 맛밤과 크림치즈, 다이제로 재현하는 흑백요리사 화제의 그 미슐랭 디저트",
         thumbnail: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&auto=format&fit=crop&q=80",
         tips: "밤 퓨레를 체에 한 번 밭쳐 내리면 훨씬 고급스러운 식감이 됩니다.",
         ingredients: [
           { id: "ing-31", name: "CJ 맛밤", amount: "1봉지(80g)", price: 3200, isChecked: true, required: true, productTitle: "CJ 맛밤 80g x 4봉" },
           { id: "ing-32", name: "필라델피아 크림치즈", amount: "100g", price: 5400, isChecked: true, required: true, productTitle: "필라델피아 플레인 크림치즈 200g" },
-          { id: "ing-33", name: "오리온 다이제 초코", amount: "4개", price: 1800, isChecked: true, required: true, productTitle: "오리온 다이제 초코 194g" },
-          { id: "ing-34", name: "에스프레소 or 카누", amount: "1스틱", price: 2500, isChecked: false, required: true, productTitle: "맥심 카누 마일드로스트 10T" }
+          { id: "ing-33", name: "오리온 다이제 초코", amount: "4개", price: 1800, isChecked: true, required: true, productTitle: "오리온 다이제 초코 194g" }
         ],
         steps: [
           { step: 1, text: "맛밤과 우유 50ml를 믹서에 갈아 부드러운 밤 퓨레를 만듭니다." },
@@ -640,22 +743,186 @@
         reviews: [
           { id: 31, nickname: "디저트러버", badge: "😍 인생요리", rating: 5, date: "3시간 전", content: "카페에서 9천원에 파는 티라미수보다 밤 풍미가 진해요!", tip: "냉동실에 30분 살짝 얼리면 아이스크림 케이크 같아요", likes: 25 }
         ]
+      },
+      {
+        id: "recipe-4",
+        title: "다이어트 오트밀 참치미역죽 (단백질 28g)",
+        category: "다이어트 & 헬스",
+        tags: ["전자레인지", "단백질", "10분컷", "자취생"],
+        viralBadge: "💪 유지어터 원픽",
+        rankBadge: "4위 (-)",
+        viralScore: 84,
+        cookTimeMin: 5,
+        cookTime: "5분",
+        difficulty: "초급",
+        servings: "1인분",
+        likes: 1530,
+        isLiked: false,
+        summary: "불 없이 전자레인지 4분! 속 편하고 살 빠지는 고단백 저칼로리 참치미역죽",
+        thumbnail: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&auto=format&fit=crop&q=80",
+        tips: "오트밀이 불면서 넘칠 수 있으니 넉넉한 깊은 그릇을 사용하세요.",
+        ingredients: [
+          { id: "ing-41", name: "퀘이커 퀵오트밀", amount: "40g", price: 6900, isChecked: true, required: true, productTitle: "퀘이커 오트밀 1kg" },
+          { id: "ing-42", name: "동원 라이트스탠다드 참치", amount: "1캔(85g)", price: 2200, isChecked: true, required: true, productTitle: "동원 살코기 참치 85g" },
+          { id: "ing-43", name: "자른 미역", amount: "1스푼", price: 1800, isChecked: true, required: true, productTitle: "청정원 신안 자른미역 50g" }
+        ],
+        steps: [
+          { step: 1, text: "그릇에 자른 미역 1스푼과 물 200ml를 넣고 2분간 불립니다." },
+          { step: 2, text: "오트밀 40g, 기름 뺀 참치 1캔, 참치액 1스푼을 넣고 잘 섞어줍니다." },
+          { step: 3, text: "전자레인지에 3분 30초 돌린 뒤 참기름과 깨를 톡톡 뿌려줍니다." }
+        ],
+        reviews: [
+          { id: 41, nickname: "헬스장출석왕", badge: "😍 인생요리", rating: 5, date: "어제", content: "식단 질릴 때 먹으면 진짜 속 편하고 맛있어요. 본죽 뺨칩니다.", tip: "참치액젓 없으면 연두 1스푼도 찰떡입니다!", likes: 16 },
+          { id: 42, nickname: "다이어터3년", badge: "😋 맛있음", rating: 4, date: "2일 전", content: "오트밀 특유의 종이 씹는 맛이 전혀 안 나고 그냥 쌀죽 같아요", tip: "계란노른자 하나 띄워드세요", likes: 9 }
+        ]
+      },
+      {
+        id: "recipe-5",
+        title: "얼큰 순두부 열라면 (해장 & 야식 종결자)",
+        category: "편의점 꿀조합",
+        tags: ["편의점꿀조합", "원팬", "10분컷", "자취생"],
+        viralBadge: "🔥 SNS 500만뷰",
+        rankBadge: "5위 (▲3)",
+        viralScore: 89,
+        cookTimeMin: 7,
+        cookTime: "7분",
+        difficulty: "초급",
+        servings: "1~2인분",
+        likes: 2890,
+        isLiked: true,
+        summary: "라면 반 개로 2명이 배 터지는 기적! 순두부의 몽글함과 열라면의 칼칼한 조화",
+        thumbnail: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&auto=format&fit=crop&q=80",
+        tips: "순두부에서 물이 많이 나오므로 조리 시 물은 일반 라면의 60%(300ml)만 넣으세요.",
+        ingredients: [
+          { id: "ing-51", name: "오뚜기 열라면", amount: "1봉지", price: 3800, isChecked: true, required: true, productTitle: "오뚜기 열라면 5입" },
+          { id: "ing-52", name: "신선한 순두부", amount: "1봉(350g)", price: 1100, isChecked: true, required: true, productTitle: "[로켓프레시] 풀무원 순두부 350g" },
+          { id: "ing-53", name: "신선 대란", amount: "1알", price: 350, isChecked: true, required: false, productTitle: "[로켓프레시] 무항생제 대란 10구" }
+        ],
+        steps: [
+          { step: 1, text: "냄비에 식용유와 대파, 고춧가루 1스푼을 넣고 파기름을 살짝 냅니다." },
+          { step: 2, text: "물 300ml를 붓고 끓으면 분말스프와 면 반 개를 넣습니다." },
+          { step: 3, text: "순두부를 숭덩숭덩 썰어 넣고 계란 1알과 후추를 듬뿍 뿌려 2분간 더 끓입니다." }
+        ],
+        reviews: [
+          { id: 51, nickname: "소주요정", badge: "😍 인생요리", rating: 5, date: "어제", content: "이거 해먹고 술 마시다가 다시 술 생각나서 소주 한 병 더 깜..", tip: "후추를 생각보다 많이 쳐야 전문점 맛 납니다!", likes: 42 }
+        ]
+      },
+      {
+        id: "recipe-6",
+        title: "통마늘 버터 간장 새우구이 (이자카야 뺨침)",
+        category: "야식 & 술안주",
+        tags: ["원팬", "10분컷", "자취생"],
+        viralBadge: "🍺 혼술족 극찬",
+        rankBadge: "6위 (NEW)",
+        viralScore: 82,
+        cookTimeMin: 12,
+        cookTime: "12분",
+        difficulty: "초급",
+        servings: "2인분",
+        likes: 1120,
+        isLiked: false,
+        summary: "버터의 풍미와 달콤 짭조름한 간장 소스가 쏙 밴 탱글탱글 통새우 안주",
+        thumbnail: "https://images.unsplash.com/photo-1559742811-822863646698?w=600&auto=format&fit=crop&q=80",
+        tips: "새우는 키친타올로 물기를 꼼꼼히 닦아내야 기름이 튀지 않고 소스가 착 달라붙습니다.",
+        ingredients: [
+          { id: "ing-61", name: "손질 냉동 칵테일새우", amount: "15마리", price: 8900, isChecked: true, required: true, productTitle: "[로켓프레시] 칵테일 손질새우 400g" },
+          { id: "ing-62", name: "무염 버터", amount: "20g", price: 4200, isChecked: true, required: true, productTitle: "서울우유 무염버터 450g" },
+          { id: "ing-63", name: "깐 통마늘", amount: "10알", price: 2300, isChecked: true, required: true, productTitle: "[로켓프레시] 깐마늘 200g" }
+        ],
+        steps: [
+          { step: 1, text: "팬에 버터 10g과 편 썬 마늘을 넣고 노릇해질 때까지 중약불로 볶습니다." },
+          { step: 2, text: "물기 뺀 새우를 넣고 센 불에서 붉은빛이 돌 때까지 빠르게 볶습니다." },
+          { step: 3, text: "진간장 1스푼, 올리고당 1스푼을 팬 가장자리에 둘러 불맛을 입히며 졸입니다." }
+        ],
+        reviews: [
+          { id: 61, nickname: "홈바텐더", badge: "😍 인생요리", rating: 5, date: "4시간 전", content: "맥주 안주로 진짜 최고입니다. 바게트 빵 찍어먹으면 감바스보다 맛있어요.", tip: "파슬리가루 뿌리면 비주얼 대박", likes: 18 }
+        ]
+      },
+      {
+        id: "recipe-7",
+        title: "흑백요리사 최현석 봉골레 마늘 오일 파스타",
+        category: "흑백요리사",
+        tags: ["흑백요리사", "원팬", "가성비"],
+        viralBadge: "👨‍🍳 스타셰프 비법",
+        rankBadge: "7위 (▲4)",
+        viralScore: 88,
+        cookTimeMin: 18,
+        cookTime: "18분",
+        difficulty: "중급",
+        servings: "1인분",
+        likes: 1980,
+        isLiked: false,
+        summary: "마늘을 깜빡할 뻔했던 전설의 파스타! 바지락 육수와 올리브유의 완벽한 유화(에멀전) 테크닉",
+        thumbnail: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=600&auto=format&fit=crop&q=80",
+        tips: "면수를 버리지 말고 2국자 넣어 팬을 힘차게 돌리며 소스가 뽀얗게 걸쭉해지게 만드세요.",
+        ingredients: [
+          { id: "ing-71", name: "데체코 스파게티니", amount: "90g", price: 3400, isChecked: true, required: true, productTitle: "데체코 스파게티 500g" },
+          { id: "ing-72", name: "생물 바지락", amount: "200g", price: 4900, isChecked: true, required: true, productTitle: "[로켓프레시] 해감 바지락 500g" },
+          { id: "ing-73", name: "엑스트라 버진 올리브유", amount: "3큰술", price: 8900, isChecked: true, required: true, productTitle: "폰타나 엑스트라버진 올리브오일 500ml" }
+        ],
+        steps: [
+          { step: 1, text: "팬에 올리브유를 듬뿍 두르고 얇게 썬 마늘과 페페론치노를 약불에서 볶아 향을 냅니다." },
+          { step: 2, text: "해감된 바지락과 화이트와인(또는 미림) 2큰술을 넣고 뚜껑을 덮어 입을 벌릴 때까지 끓입니다." },
+          { step: 3, text: "삶은 면과 면수 2국자를 넣고 강한 불에서 팬을 돌리며 소스를 기름과 유화시킵니다." }
+        ],
+        reviews: [
+          { id: 71, nickname: "파스타장인지망생", badge: "😍 인생요리", rating: 5, date: "5일 전", content: "면수랑 올리브유 유화시키는 게 핵심이네요. 레스토랑 맛 납니다!", tip: "마늘 절대 태우지 마세요!", likes: 31 }
+        ]
+      },
+      {
+        id: "recipe-8",
+        title: "전자레인지 5분 팽이버섯 불닭 치즈롤",
+        category: "초간단 자취요리",
+        tags: ["전자레인지", "자취생", "10분컷", "편의점꿀조합"],
+        viralBadge: "🔥 인스타 420만뷰",
+        rankBadge: "8위 (▲1)",
+        viralScore: 86,
+        cookTimeMin: 5,
+        cookTime: "5분",
+        difficulty: "초급",
+        servings: "1인분",
+        likes: 1420,
+        isLiked: false,
+        summary: "팽이버섯 특유의 아작아작 뽀드득한 식감과 매콤한 불닭소스, 치즈 이불의 환상 궁합",
+        thumbnail: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=600&auto=format&fit=crop&q=80",
+        tips: "팽이버섯 밑동은 가위로 자르고 물기를 가볍게 털어주세요.",
+        ingredients: [
+          { id: "ing-81", name: "신선 팽이버섯", amount: "1봉(150g)", price: 990, isChecked: true, required: true, productTitle: "[로켓프레시] 무농약 팽이버섯 3입" },
+          { id: "ing-82", name: "삼양 불닭소스", amount: "2스푼", price: 3900, isChecked: true, required: true, productTitle: "삼양 불닭소스 200g" },
+          { id: "ing-83", name: "모짜렐라 피자치즈", amount: "50g", price: 3500, isChecked: true, required: true, productTitle: "[로켓프레시] 슈레드 모짜렐라치즈 300g" }
+        ],
+        steps: [
+          { step: 1, text: "팽이버섯을 한입 크기로 가닥가닥 뜯어 전자레인지 용기에 펼쳐 담습니다." },
+          { step: 2, text: "불닭소스 2스푼과 올리고당 반 스푼, 참기름 살짝을 섞어 버섯 위에 골고루 바릅니다." },
+          { step: 3, text: "모짜렐라 치즈를 듬뿍 얹고 랩을 씌워 전자레인지에 2분 30초 돌려 치즈가 녹으면 완성!" }
+        ],
+        reviews: [
+          { id: 81, nickname: "맵찔이탈출러", badge: "😍 인생요리", rating: 5, date: "어제", content: "식감이 미쳤습니다 ㅠㅠ 팽이버섯이 이렇게 맛있는 건 줄 처음 알았어요", tip: "밥 비벼 먹으면 밥도둑입니다", likes: 23 }
+        ]
       }
     ];
 
+    // --- 7-2. 전역 필터 및 상태 변수 ---
+    let currentFilter = {
+      sort: 'trend',       // 'trend', 'likes', 'rating', 'time'
+      category: 'ALL',     // 'ALL', '초간단 자취요리', '편의점 꿀조합', ...
+      tag: 'ALL',          // 'ALL', '전자레인지', '원팬', ...
+      difficulty: 'ALL',   // 'ALL', '초급', '중급'
+      search: ''
+    };
+
     let currentRecipe = recipes[0];
-    let activeTab = 'trend';
     let currentRating = 5;
     let timerInterval = null;
-    let timerSeconds = 210; // 3분 30초
+    let timerSeconds = 210;
 
-    // --- 7-2. 초기화 및 렌더링 ---
+    // --- 7-3. 초기화 ---
     document.addEventListener("DOMContentLoaded", () => {
-      renderRecipeGrid(recipes);
+      applyFiltersAndRender();
       updateBookmarkBadge();
     });
 
-    // 뷰포트 프리뷰 토글 함수
+    // 뷰포트 프리뷰 토글
     function setViewport(type) {
       const wrapper = document.getElementById('viewport-wrapper');
       const bMobile = document.getElementById('btn-vp-mobile');
@@ -673,7 +940,7 @@
         wrapper.style.boxShadow = '0 20px 25px -5px rgb(0 0 0 / 0.1)';
         bMobile.className = "px-2.5 py-1 rounded bg-brand-500 text-white font-medium transition flex items-center gap-1";
       } else if (type === 'tablet') {
-        wrapper.style.maxWidth = '768px';
+        wrapper.style.maxWidth = '820px';
         wrapper.style.borderLeft = '1px solid #e2e8f0';
         wrapper.style.borderRight = '1px solid #e2e8f0';
         wrapper.style.boxShadow = '0 20px 25px -5px rgb(0 0 0 / 0.1)';
@@ -687,63 +954,183 @@
       }
     }
 
-    // 모바일 검색창 토글
     function toggleMobileSearch() {
-      const box = document.getElementById('mobileSearchBox');
-      box.classList.toggle('hidden');
+      document.getElementById('mobileSearchBox').classList.toggle('hidden');
     }
 
-    // 탭 변경
-    function changeTab(tabKey) {
-      activeTab = tabKey;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = "tab-btn px-4 py-2 rounded-xl font-semibold text-sm bg-white text-slate-600 hover:bg-slate-100 flex items-center gap-1.5 flex-shrink-0 transition";
+    function toggleMobileFilter() {
+      const sidebar = document.getElementById('sidebar-filter-panel');
+      sidebar.classList.toggle('hidden');
+      if (!sidebar.classList.contains('hidden')) {
+        sidebar.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // --- 7-4. 왼쪽 사이드바 필터링 & 정렬 조작 인터페이스 ---
+
+    // 1) 정렬 변경 (실시간 트렌드, 좋아요순, 평점순, 조리시간순)
+    function setSort(sortKey) {
+      currentFilter.sort = sortKey;
+      
+      // 사이드바 버튼 UI 활성화 상태 변경
+      document.querySelectorAll('.sort-btn').forEach(btn => {
+        btn.className = "sort-btn w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 flex items-center justify-between transition";
       });
-      const activeBtn = document.getElementById(`tab-${tabKey}`);
-      if(activeBtn) {
-        activeBtn.className = "tab-btn px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white flex items-center gap-1.5 flex-shrink-0 shadow-sm transition";
+      const activeBtn = document.getElementById(`sort-${sortKey}`);
+      if (activeBtn) {
+        activeBtn.className = "sort-btn w-full text-left px-3 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white flex items-center justify-between transition";
       }
 
-      if (tabKey === 'likes') {
-        const sorted = [...recipes].sort((a,b) => b.likes - a.likes);
-        renderRecipeGrid(sorted);
-      } else if (tabKey === 'quick') {
-        renderRecipeGrid(recipes.filter(r => r.tags.includes('10분컷')));
-      } else if (tabKey === 'convenience') {
-        renderRecipeGrid(recipes.filter(r => r.tags.includes('편의점꿀조합')));
+      applyFiltersAndRender();
+    }
+
+    // 2) 카테고리 변경
+    function setCategory(catName) {
+      currentFilter.category = catName;
+
+      // 사이드바 카테고리 버튼 UI 업데이트
+      document.querySelectorAll('#category-list .cat-btn').forEach(btn => {
+        btn.className = "cat-btn w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center justify-between transition";
+      });
+      event?.currentTarget?.classList?.add('bg-brand-50', 'text-brand-700', 'font-bold');
+
+      // 모바일 퀵 버튼 UI 업데이트
+      document.querySelectorAll('.cat-quick-btn').forEach(b => {
+        b.className = "cat-quick-btn px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 border border-slate-200 flex-shrink-0";
+      });
+
+      applyFiltersAndRender();
+    }
+
+    // 3) 태그 토글
+    function toggleTag(tagName) {
+      currentFilter.tag = tagName;
+
+      document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.className = "tag-btn px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+      });
+      event?.currentTarget?.classList?.remove('bg-slate-100', 'text-slate-600');
+      event?.currentTarget?.classList?.add('active', 'bg-brand-500', 'text-white', 'font-bold');
+
+      applyFiltersAndRender();
+    }
+
+    // 4) 난이도 변경
+    function setDifficulty(diff) {
+      currentFilter.difficulty = diff;
+      document.querySelectorAll('.diff-btn').forEach(b => {
+        b.className = "diff-btn py-1 rounded-lg font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 text-center transition";
+      });
+      if (diff === 'ALL') document.getElementById('diff-all').className = "diff-btn py-1 rounded-lg font-bold bg-slate-800 text-white text-center transition";
+      if (diff === '초급') document.getElementById('diff-easy').className = "diff-btn py-1 rounded-lg font-bold bg-slate-800 text-white text-center transition";
+      if (diff === '중급') document.getElementById('diff-mid').className = "diff-btn py-1 rounded-lg font-bold bg-slate-800 text-white text-center transition";
+
+      applyFiltersAndRender();
+    }
+
+    // 5) 전체 필터 리셋
+    function resetAllFilters() {
+      currentFilter = {
+        sort: 'trend',
+        category: 'ALL',
+        tag: 'ALL',
+        difficulty: 'ALL',
+        search: ''
+      };
+      document.getElementById('searchInput').value = '';
+      
+      // UI 재설정
+      setSort('trend');
+      setCategory('ALL');
+      toggleTag('ALL');
+      setDifficulty('ALL');
+    }
+
+    // 6) 검색어 입력
+    function handleSearch(val) {
+      currentFilter.search = val.trim().toLowerCase();
+      applyFiltersAndRender();
+    }
+
+    // --- 7-5. 필터 및 정렬 연산 & 렌더링 파이프라인 ---
+    function applyFiltersAndRender() {
+      let result = [...recipes];
+
+      // [1] 카테고리 필터
+      if (currentFilter.category !== 'ALL') {
+        result = result.filter(r => r.category === currentFilter.category);
+      }
+
+      // [2] 태그 필터
+      if (currentFilter.tag !== 'ALL') {
+        result = result.filter(r => r.tags.includes(currentFilter.tag));
+      }
+
+      // [3] 난이도 필터
+      if (currentFilter.difficulty !== 'ALL') {
+        result = result.filter(r => r.difficulty === currentFilter.difficulty);
+      }
+
+      // [4] 검색어 필터
+      if (currentFilter.search) {
+        result = result.filter(r => {
+          const matchTitle = r.title.toLowerCase().includes(currentFilter.search);
+          const matchIng = r.ingredients.some(i => i.name.toLowerCase().includes(currentFilter.search));
+          const matchCat = r.category.toLowerCase().includes(currentFilter.search);
+          return matchTitle || matchIng || matchCat;
+        });
+      }
+
+      // [5] 정렬 기준 적용
+      if (currentFilter.sort === 'trend') {
+        // 바이럴 점수 높은 순
+        result.sort((a, b) => b.viralScore - a.viralScore);
+      } else if (currentFilter.sort === 'likes') {
+        // 누적 좋아요 많은 순
+        result.sort((a, b) => b.likes - a.likes);
+      } else if (currentFilter.sort === 'rating') {
+        // 리뷰 평균 평점 높은 순
+        const getAvg = (r) => r.reviews.length ? (r.reviews.reduce((s, x) => s + x.rating, 0) / r.reviews.length) : 5.0;
+        result.sort((a, b) => getAvg(b) - getAvg(a));
+      } else if (currentFilter.sort === 'time') {
+        // 조리 시간 짧은 순
+        result.sort((a, b) => a.cookTimeMin - b.cookTimeMin);
+      }
+
+      // 상단 필터 상태 뱃지 텍스트 업데이트
+      updateStatusBadges();
+
+      // 그리드 렌더링
+      renderRecipeGrid(result);
+      document.getElementById('result-count').innerText = result.length;
+    }
+
+    function updateStatusBadges() {
+      const sortMap = {
+        trend: '🔥 실시간 트렌드순',
+        likes: '❤️ 좋아요 많은 순',
+        rating: '⭐ 리뷰 평점 높은 순',
+        time: '⏱️ 조리시간 짧은 순'
+      };
+      document.getElementById('badge-sort-status').innerText = sortMap[currentFilter.sort];
+
+      document.getElementById('badge-cat-status').innerText = currentFilter.category === 'ALL' ? '전체 카테고리' : currentFilter.category;
+
+      const tagBadge = document.getElementById('badge-tag-status');
+      if (currentFilter.tag !== 'ALL') {
+        tagBadge.innerText = `#${currentFilter.tag}`;
+        tagBadge.classList.remove('hidden');
       } else {
-        renderRecipeGrid(recipes);
+        tagBadge.classList.add('hidden');
       }
-    }
 
-    // 태그 필터
-    function filterByTag(tag) {
-      document.querySelectorAll('.tag-chip').forEach(c => {
-        c.className = "tag-chip px-3 py-1 rounded-full text-xs font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200";
-      });
-      event.target.className = "tag-chip active px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-600 border border-brand-200";
-
-      if (tag === 'ALL') {
-        renderRecipeGrid(recipes);
+      const diffBadge = document.getElementById('badge-diff-status');
+      if (currentFilter.difficulty !== 'ALL') {
+        diffBadge.innerText = `${currentFilter.difficulty} 난이도`;
+        diffBadge.classList.remove('hidden');
       } else {
-        const filtered = recipes.filter(r => r.tags.includes(tag));
-        renderRecipeGrid(filtered);
+        diffBadge.classList.add('hidden');
       }
-    }
-
-    // 검색 핸들러
-    function handleSearch(keyword) {
-      const query = keyword.trim().toLowerCase();
-      if (!query) {
-        renderRecipeGrid(recipes);
-        return;
-      }
-      const matched = recipes.filter(r => {
-        const titleMatch = r.title.toLowerCase().includes(query);
-        const ingredientMatch = r.ingredients.some(ing => ing.name.toLowerCase().includes(query));
-        return titleMatch || ingredientMatch;
-      });
-      renderRecipeGrid(matched);
     }
 
     // 레시피 카드 그리드 렌더링
@@ -751,84 +1138,94 @@
       const grid = document.getElementById('recipe-grid');
       if (list.length === 0) {
         grid.innerHTML = `
-          <div class="col-span-full py-16 text-center text-slate-400 space-y-2">
-            <span class="text-4xl block">🔍</span>
-            <p class="font-bold text-sm text-slate-600">조건에 맞는 유행 레시피를 찾지 못했습니다.</p>
-            <p class="text-xs">다른 검색어나 재료명(예: 대파, 스팸)으로 검색해 보세요!</p>
+          <div class="col-span-full py-16 text-center text-slate-400 space-y-3 bg-white rounded-2xl border border-slate-200 p-8">
+            <span class="text-5xl block animate-bounce">🍳</span>
+            <p class="font-extrabold text-base text-slate-700">해당 조건에 일치하는 레시피가 없습니다.</p>
+            <p class="text-xs text-slate-500">다른 카테고리나 정렬 방식을 선택하거나, 필터를 초기화해 보세요!</p>
+            <button onclick="resetAllFilters()" class="mt-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold shadow hover:bg-slate-800 transition">
+              모든 필터 초기화
+            </button>
           </div>
         `;
         return;
       }
 
-      grid.innerHTML = list.map(recipe => `
-        <article class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 flex flex-col group">
-          <!-- 썸네일 영역 -->
-          <div class="relative h-48 overflow-hidden bg-slate-100 cursor-pointer" onclick="openRecipeDetail('${recipe.id}')">
-            <img src="${recipe.thumbnail}" alt="${recipe.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/20"></div>
-            
-            <!-- 상단 뱃지들 -->
-            <div class="absolute top-3 left-3 flex items-center gap-1.5">
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-900/80 backdrop-blur-md text-amber-300 border border-white/10">
-                ${recipe.rankBadge}
-              </span>
-              <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-600/90 text-white backdrop-blur-md">
-                ${recipe.viralBadge}
-              </span>
-            </div>
+      grid.innerHTML = list.map(recipe => {
+        const avgRating = recipe.reviews.length > 0 
+          ? (recipe.reviews.reduce((a,c)=>a+c.rating,0)/recipe.reviews.length).toFixed(1) 
+          : '5.0';
 
-            <!-- 찜 하트 버튼 -->
-            <button onclick="toggleCardLike(event, '${recipe.id}')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition">
-              <svg class="w-4 h-4 ${recipe.isLiked ? 'text-rose-500 fill-current' : 'text-white'}" fill="${recipe.isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-              </svg>
-            </button>
-
-            <!-- 썸네일 하단 메타 -->
-            <div class="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between text-xs font-medium">
-              <span class="flex items-center gap-1">⏱️ ${recipe.cookTime}</span>
-              <span class="flex items-center gap-1">⭐ ${recipe.reviews.length > 0 ? (recipe.reviews.reduce((a,c)=>a+c.rating,0)/recipe.reviews.length).toFixed(1) : '5.0'} (리뷰 ${recipe.reviews.length})</span>
-            </div>
-          </div>
-
-          <!-- 본문 영역 -->
-          <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-            <div class="space-y-2">
-              <div class="flex items-center gap-2 text-xs text-slate-400">
-                <span class="font-medium text-brand-600">${recipe.category}</span>
-                <span>•</span>
-                <span>출처: ${recipe.creator}</span>
+        return `
+          <article class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col group">
+            <!-- 썸네일 영역 -->
+            <div class="relative h-44 overflow-hidden bg-slate-100 cursor-pointer" onclick="openRecipeDetail('${recipe.id}')">
+              <img src="${recipe.thumbnail}" alt="${recipe.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/20"></div>
+              
+              <!-- 상단 뱃지들 -->
+              <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/85 backdrop-blur-md text-amber-300 border border-white/10">
+                  ${recipe.rankBadge}
+                </span>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-rose-600/90 text-white backdrop-blur-md">
+                  ${recipe.viralBadge}
+                </span>
               </div>
-              <h3 onclick="openRecipeDetail('${recipe.id}')" class="font-bold text-slate-900 text-base leading-snug group-hover:text-brand-600 transition cursor-pointer line-clamp-1">
-                ${recipe.title}
-              </h3>
-              <p class="text-xs text-slate-500 line-clamp-2">
-                ${recipe.summary}
-              </p>
-            </div>
 
-            <!-- 하단 재료 원클릭 장바구니 미리보기 및 액션 -->
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-              <div class="text-xs text-slate-500">
-                <span class="font-bold text-slate-800">${recipe.ingredients.length}개</span> 재료 일괄구매
-              </div>
-              <button onclick="openRecipeDetail('${recipe.id}')" class="px-3.5 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs transition flex items-center gap-1">
-                <span>조리법 & 장바구니</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              <!-- 찜 하트 버튼 -->
+              <button onclick="toggleCardLike(event, '${recipe.id}')" class="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md flex items-center justify-center text-white transition">
+                <svg class="w-3.5 h-3.5 ${recipe.isLiked ? 'text-rose-500 fill-current' : 'text-white'}" fill="${recipe.isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
               </button>
+
+              <!-- 썸네일 하단 메타 -->
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 text-white flex items-center justify-between text-xs font-medium">
+                <span class="flex items-center gap-1 text-[11px]">⏱️ ${recipe.cookTime}</span>
+                <span class="flex items-center gap-1 text-[11px] font-bold text-amber-300">⭐ ${avgRating} (${recipe.reviews.length})</span>
+              </div>
             </div>
-          </div>
-        </article>
-      `).join('');
+
+            <!-- 본문 영역 -->
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                  <span class="font-bold text-brand-600 bg-brand-50 px-1.5 py-0.2 rounded">${recipe.category}</span>
+                  <span>${recipe.difficulty}</span>
+                </div>
+                <h3 onclick="openRecipeDetail('${recipe.id}')" class="font-bold text-slate-900 text-sm leading-snug group-hover:text-brand-600 transition cursor-pointer line-clamp-1">
+                  ${recipe.title}
+                </h3>
+                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                  ${recipe.summary}
+                </p>
+                <div class="flex flex-wrap gap-1 pt-1">
+                  ${recipe.tags.map(t => `<span class="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">#${t}</span>`).join('')}
+                </div>
+              </div>
+
+              <!-- 하단 재료 원클릭 장바구니 미리보기 및 액션 -->
+              <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div class="text-[11px] text-slate-500">
+                  <span class="font-bold text-slate-800">${recipe.ingredients.length}개</span> 재료
+                </div>
+                <button onclick="openRecipeDetail('${recipe.id}')" class="px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs transition flex items-center gap-1">
+                  <span>조리법 & 장바구니</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
     }
 
-    // --- 7-3. 레시피 상세 페이지 이동 ---
+    // --- 7-6. 레시피 상세 페이지 이동 ---
     function openRecipeDetail(recipeId) {
       const found = recipes.find(r => r.id === recipeId);
       if (!found) return;
       currentRecipe = found;
 
-      // 뷰 토글
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('detail-view').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -836,7 +1233,7 @@
       // 상세 데이터 바인딩
       document.getElementById('detail-title').innerText = found.title;
       document.getElementById('detail-desc').innerText = found.summary;
-      document.getElementById('detail-creator').innerText = found.creator;
+      document.getElementById('detail-creator').innerText = found.creator || "유행 셰프";
       document.getElementById('detail-badge-viral').innerText = found.viralBadge;
       document.getElementById('detail-category').innerText = found.category;
       document.getElementById('detail-time').innerText = `⏱️ ${found.cookTime}`;
@@ -844,6 +1241,11 @@
       document.getElementById('detail-servings').innerText = `🍽️ ${found.servings}`;
       document.getElementById('detail-like-count').innerText = found.likes.toLocaleString();
       document.getElementById('detail-tip-text').innerText = found.tips;
+
+      const avgRating = found.reviews.length > 0 
+        ? (found.reviews.reduce((a,c)=>a+c.rating,0)/found.reviews.length).toFixed(1) 
+        : '5.0';
+      document.getElementById('detail-rating-display').innerText = avgRating;
 
       renderIngredientChecklist(found.ingredients);
       renderRecipeSteps(found.steps);
@@ -857,7 +1259,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- 7-4. 재료 체크리스트 & 원클릭 장바구니 연동 로직 ---
+    // --- 7-7. 재료 체크리스트 & 원클릭 장바구니 연동 로직 ---
     function renderIngredientChecklist(ingredients) {
       const container = document.getElementById('ingredient-checklist');
       container.innerHTML = ingredients.map(ing => `
@@ -902,7 +1304,6 @@
       document.getElementById('selected-price-total').innerText = total.toLocaleString();
     }
 
-    // 쿠팡 파트너스 브릿지 모달 오픈
     function openCoupangBridgeModal() {
       const selected = currentRecipe.ingredients.filter(i => i.isChecked);
       if (selected.length === 0) {
@@ -949,7 +1350,7 @@
       openCoupangBridgeModal();
     }
 
-    // --- 7-5. 조리 단계 & 타이머 로직 ---
+    // --- 7-8. 조리 단계 & 타이머 로직 ---
     function renderRecipeSteps(steps) {
       const container = document.getElementById('recipe-steps-list');
       container.innerHTML = steps.map(s => `
@@ -1002,7 +1403,7 @@
       if (display) display.innerText = `${m}:${s}`;
     }
 
-    // --- 7-6. 익명 리뷰 & 꿀팁 작성/렌더링 ---
+    // --- 7-9. 익명 리뷰 & 꿀팁 작성/렌더링 ---
     function renderReviews(reviews) {
       const badge = document.getElementById('review-count-badge');
       if (badge) badge.innerText = `${reviews.length}개`;
@@ -1108,14 +1509,14 @@
       btn.classList.add('text-brand-600', 'font-bold');
     }
 
-    // --- 7-7. 좋아요 & 북마크(찜) ---
+    // --- 7-10. 좋아요 & 북마크(찜) ---
     function toggleCardLike(e, recipeId) {
       e.stopPropagation();
       const found = recipes.find(r => r.id === recipeId);
       if (found) {
         found.isLiked = !found.isLiked;
         found.likes += found.isLiked ? 1 : -1;
-        renderRecipeGrid(recipes);
+        applyFiltersAndRender();
         updateBookmarkBadge();
       }
     }
@@ -1124,7 +1525,7 @@
       currentRecipe.isLiked = !currentRecipe.isLiked;
       currentRecipe.likes += currentRecipe.isLiked ? 1 : -1;
       document.getElementById('detail-like-count').innerText = currentRecipe.likes.toLocaleString();
-      renderRecipeGrid(recipes);
+      applyFiltersAndRender();
       updateBookmarkBadge();
     }
 
